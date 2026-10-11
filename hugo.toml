@@ -13,31 +13,18 @@ pygmentsUseClasses = true
 mainsections = ["posts"]
 pagination.pagerSize = 20
 
+# Disable default multilingual processing to prevent theme template errors
+defaultContentLanguage = "en"
+disableLanguages = []
+
 [minify]
 disableXML = true
 
-# Language Configuration
-[languages.en]
-languageName = "English"
-weight = 1
-
-[languages.en.taxonomies]
+# Taxonomies
+[taxonomies]
 category = "categories"
 tag = "tags"
 series = "series"
-
-[languages.en.params.profileMode]
-enabled = true
-title = "shark-asmx"
-imageUrl = "https://avatars.githubusercontent.com/u/89577007"
-imageTitle = "Profile image"
-imageWidth = 130
-imageHeight = 130
-subtitle = " ~/"
-
-  [[languages.en.params.profileMode.buttons]]
-  name = "Blog"
-  url = "posts"
 
 # Site Parameters
 [params]
@@ -56,7 +43,7 @@ fullWidthTheme = false
 # UI & Display Options
 ShowShareButtons = true
 ShowReadingTime = true
-displayFullLangName = true
+displayFullLangName = false
 ShowPostNavLinks = true
 ShowBreadCrumbs = true
 ShowCodeCopyButtons = true
@@ -67,6 +54,20 @@ ShowToc = true
 showThemeNotice = true
 showPostsSummary = true
 contentTypeName = "posts"
+
+# Profile / Home Mode Configuration
+[params.profileMode]
+enabled = true
+title = "shark-asmx"
+imageUrl = "https://avatars.githubusercontent.com/u/89577007"
+imageTitle = "Profile image"
+imageWidth = 130
+imageHeight = 130
+subtitle = " ~/"
+
+[[params.profileMode.buttons]]
+name = "Blog"
+url = "posts"
 
 [params.homeInfoParams]
 Title = "Hii, I'm shark!!. I go with prefix shark"
@@ -129,13 +130,6 @@ unsafe = true
 [markup.highlight]
 noClasses = false
 
-# Services
-[services.instagram]
-disableInlineCSS = true
-
-[services.x]
-disableInlineCSS = true
-
 # Navigation Menu
 [menu]
   [[menu.main]]
@@ -156,4 +150,3 @@ suffixes = ["json"]
 
 [outputs]
 home = ["HTML", "RSS", "SearchIndex"]
-
