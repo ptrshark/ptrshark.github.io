@@ -1,6 +1,8 @@
 baseURL = "https://shark-asmx.github.io/"
 title = "shark-asmx"
 theme = "rusty-typewriter"
+
+# Global Configuration
 enableInlineShortcodes = true
 enableRobotsTXT = true
 buildDrafts = false
@@ -8,15 +10,13 @@ buildFuture = false
 buildExpired = false
 enableEmoji = true
 pygmentsUseClasses = true
-mainsections = [ "posts" ]
+mainsections = ["posts"]
 pagination.pagerSize = 20
-
-# disableKinds = ["sitemap", "robotsTXT"]
-
 
 [minify]
 disableXML = true
 
+# Language Configuration
 [languages.en]
 languageName = "English"
 weight = 1
@@ -26,26 +26,20 @@ category = "categories"
 tag = "tags"
 series = "series"
 
+[languages.en.params.profileMode]
+enabled = true
+title = "shark-asmx"
+imageUrl = "https://avatars.githubusercontent.com/u/89577007"
+imageTitle = "Profile image"
+imageWidth = 130
+imageHeight = 130
+subtitle = " ~/"
 
-  # [languages.en.params]
-  # languageAltTitle = "English"
-  #   [languages.en.params.logo]
-  #   logoText = "shark.exe [0]"
-  #   logoHomeLink = "/posts"
+  [[languages.en.params.profileMode.buttons]]
+  name = "Blog"
+  url = "posts"
 
-    [languages.en.params.profileMode]
-    enabled = true
-    title = "shark-asmx"
-    imageUrl = "https://avatars.githubusercontent.com/u/89577007"
-    imageTitle = "Profile image"
-    imageWidth = 130
-    imageHeight = 130
-    subtitle = " ~/"
-
-      [[languages.en.params.profileMode.buttons]]
-      name = "Blog"
-      url = "posts"
-
+# Site Parameters
 [params]
 env = "production"
 mainpagetitle = "hex codes"
@@ -54,6 +48,12 @@ copyrightname = "shark-asmx"
 loadspeedfactor = 10.0
 description = "shark-asmx's blog"
 defaultTheme = "auto"
+theme = "dark"
+palette = "rusty-typewriter"
+themeColor = "orange"
+fullWidthTheme = false
+
+# UI & Display Options
 ShowShareButtons = true
 ShowReadingTime = true
 displayFullLangName = true
@@ -64,71 +64,96 @@ ShowRssButtonInSectionTermList = true
 ShowAllPagesInArchive = true
 ShowPageNums = true
 ShowToc = true
-theme = "dark"
-palette = "rusty-typewriter"
 showThemeNotice = true
 showPostsSummary = true
 contentTypeName = "posts"
-themeColor = "orange"
-fullWidthTheme = false
 
-  [params.profileMode]
-  enabled = false
-  title = "shark-asmx"
-  imageUrl = "#"
-  imageTitle = "my image"
-
-    [[params.profileMode.buttons]]
-    name = "Tags"
-    url = "tags"
-
-  [params.homeInfoParams]
-  Title = "Hii, I'm shark!!. I go with prefix shark"
-  Content = [
-      "i'm curious about everything and can read pretty much anything. doesn’t mean my brain actually processes any of it, though"
+[params.homeInfoParams]
+Title = "Hii, I'm shark!!. I go with prefix shark"
+Content = [
+  "i'm curious about everything and can read pretty much anything. doesn’t mean my brain actually processes any of it, though"
 ]
 
-  [[params.socialIcons]]
-  name = "Github"
-  title = "Join me on Github"
-  url = "https://github.com/shark-asmx"
+[[params.socialIcons]]
+name = "Github"
+title = "Join me on Github"
+url = "https://github.com/shark-asmx"
 
-  [[params.socialIcons]]
-  name = "X"
-  title = "Join me on Twitter"
-  url = "https://twitter.com/shark-asmx"
+[[params.socialIcons]]
+name = "X"
+title = "Join me on Twitter"
+url = "https://twitter.com/shark-asmx"
 
-  [[params.socialIcons]]
-  name = "linkedin"
-  title = "Join me on LinkedIn"
-  url = "https://www.linkedin.com/in/sabhya05/"
+[[params.socialIcons]]
+name = "linkedin"
+title = "Join me on LinkedIn"
+url = "https://www.linkedin.com/in/sabhya05/"
 
+[params.assets]
+disableHLJS = true
 
-  [params.assets]
-  disableHLJS = true
+# Theme-Specific Parameters (rusty-typewriter)
+[params.rtwt]
+sidePane = true
+countPageItems = 7
 
+[params.rtwt.home]
+showBio = true
+showAuthorImg = true
+sidePaneTags = true
+showFeatured = true
+showRecent = true
+hideRecentWhenFeatured = true
+countRecent = 5
+
+[params.rtwt.side.home]
+sidePaneSticky = false
+taxonomies = ["tags"]
+countTaxonomy = 5
+
+[params.rtwt.side.list]
+sidePaneSticky = false
+
+[params.rtwt.side.single]
+sidePaneSticky = true
+showDetails = true
+showTableOfContents = true
+showAttachments = true
+showRelated = true
+countRelated = 5
+
+# Markup & Code Highlighting
 [markup.goldmark.renderer]
 unsafe = true
 
 [markup.highlight]
 noClasses = false
 
+# Services
 [services.instagram]
 disableInlineCSS = true
 
 [services.x]
 disableInlineCSS = true
 
-
-
+# Navigation Menu
 [menu]
   [[menu.main]]
-    identifier = "posts"
-    name = "All posts"
-    url = "/posts/"       # The path can lead to a content folder too.
-    weight = 20
+  identifier = "posts"
+  name = "All posts"
+  url = "/posts/"
+  weight = 20
 
-    [[menu.main]]
-    name = "posts"
-    url = "/posts"
-    weight = 20
+# Search & Output Formats
+[outputFormats.SearchIndex]
+mediaType = "application/json"
+baseName = "searchindex"
+isPlainText = true
+notAlternative = true
+
+[mediaTypes."application/json"]
+suffixes = ["json"]
+
+[outputs]
+home = ["HTML", "RSS", "SearchIndex"]
+
