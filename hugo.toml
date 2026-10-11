@@ -1,7 +1,6 @@
 baseURL = "https://shark-asmx.github.io/"
-languageCode = "en-us"
 title = "shark-asmx"
-theme = "hugo.386"
+theme = "rusty-typewriter"
 enableInlineShortcodes = true
 enableRobotsTXT = true
 buildDrafts = false
@@ -11,6 +10,8 @@ enableEmoji = true
 pygmentsUseClasses = true
 mainsections = [ "posts" ]
 pagination.pagerSize = 20
+
+# disableKinds = ["sitemap", "robotsTXT"]
 
 
 [minify]
@@ -25,16 +26,12 @@ category = "categories"
 tag = "tags"
 series = "series"
 
-# [[languages.en.menu.main]]
-# name = "posts"
-# url = "/posts"
-# weight = 20
 
-  [languages.en.params]
-  languageAltTitle = "English"
-    [languages.en.params.logo]
-    logoText = "shark.exe [0]"
-    logoHomeLink = "/posts"
+  # [languages.en.params]
+  # languageAltTitle = "English"
+  #   [languages.en.params.logo]
+  #   logoText = "shark.exe [0]"
+  #   logoHomeLink = "/posts"
 
     [languages.en.params.profileMode]
     enabled = true
@@ -54,12 +51,8 @@ env = "production"
 mainpagetitle = "hex codes"
 mainpagesubtitle = "shark blog"
 copyrightname = "shark-asmx"
-mainpagedesc = '''
-    ```tiny jar on my shelf, collecting strange ideas and random thoughts at /posts```
-'''
 loadspeedfactor = 10.0
 description = "shark-asmx's blog"
-author = "shark-asmx"
 defaultTheme = "auto"
 ShowShareButtons = true
 ShowReadingTime = true
@@ -72,7 +65,7 @@ ShowAllPagesInArchive = true
 ShowPageNums = true
 ShowToc = true
 theme = "dark"
-palette = "hugo.386"
+palette = "rusty-typewriter"
 showThemeNotice = true
 showPostsSummary = true
 contentTypeName = "posts"
@@ -85,14 +78,14 @@ fullWidthTheme = false
   imageUrl = "#"
   imageTitle = "my image"
 
-    # [[params.profileMode.buttons]]
-    # name = "Tags"
-    # url = "tags"
+    [[params.profileMode.buttons]]
+    name = "Tags"
+    url = "tags"
 
   [params.homeInfoParams]
-  Title = "Hii, I'm shark-asmx."
+  Title = "Hii, I'm shark!!. I go with prefix shark"
   Content = [
-  "I'm Sabhya Raj Mehta currently pursuing B.Tech CSE in Amrita Vishwa Vidhyapeetham. I'm DFIR enthusiast, playing CTFs with teambi0s & DFIR category lead @ bi0s."
+      "i'm curious about everything and can read pretty much anything. doesn’t mean my brain actually processes any of it, though"
 ]
 
   [[params.socialIcons]]

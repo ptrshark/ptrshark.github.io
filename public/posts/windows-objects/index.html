@@ -1,47 +1,106 @@
 <!DOCTYPE html>
-<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
-    <title>shark-asmx</title>
-    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-    <meta content="utf-8" http-equiv="encoding">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="theme-color" content="#000084" />
-    <link rel="icon" href="http://localhost:1313//favicon.ico">
-    <link rel="canonical" href="http://localhost:1313/">
-    
-    
-</head>
-<body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"></button>
-            <a class="brand" href="http://localhost:1313/">shark-asmx</a>
-            <div class="nav-collapse collapse">
-                <ul class="nav">
-                    
-                    
-                        
-                            <li>
-                                <a href="/posts">
-                                    
-                                    <span>posts</span>
-                                </a>
-                            </li>
-                        
-                    
-                </ul>
-            </div>
-        </div>
-    </div>
-</nav><div id="content" class="container">
+<html lang="en" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<div class="row-fluid navmargin">
-    <div class="page-header">
-        <h1>Windows Objects: Structure, Headers, and Internal Mechanics - Wed, Mar 12, 2025</h1>
+<title>Windows Objects: Structure, Headers, and Internal Mechanics | shark-asmx</title>
+<link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml" /><meta property="og:url" content="http://localhost:1313/posts/windows-objects/">
+	<meta property="og:site_name" content="shark-asmx">
+	<meta property="og:title" content="Windows Objects: Structure, Headers, and Internal Mechanics">
+	<meta property="og:description" content="A deep dive into Windows objects, focusing on their structure, headers, and relationships. This blog covers key components like _OBJECT_HEADER, OBJECT_TYPE, and ObTypeIndexTable, providing insights into how Windows organizes and references objects.">
+	<meta property="og:locale" content="en">
+	<meta property="og:type" content="article">
+		<meta property="article:section" content="posts">
+		<meta property="article:published_time" content="2025-03-12T08:23:06+05:30">
+		<meta property="article:modified_time" content="2025-03-12T08:23:06+05:30">
+		<meta property="article:tag" content="Windows Internals">
+		<meta property="article:tag" content="Kernel Objects">
+		<meta property="article:tag" content="Debugging">
+		<meta property="article:tag" content="Reverse Engineering">
+
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:title" content="Windows Objects: Structure, Headers, and Internal Mechanics">
+	<meta name="twitter:description" content="A deep dive into Windows objects, focusing on their structure, headers, and relationships. This blog covers key components like _OBJECT_HEADER, OBJECT_TYPE, and ObTypeIndexTable, providing insights into how Windows organizes and references objects.">
+
+    <link rel="stylesheet" href="/css/root.css">
+    <link rel="stylesheet" href="/css/bundle.css">
+
+      <script src="/js/bundle.js"></script><script defer src="/js/search/flexsearch.compact.3928d3d2172bc0b5f75d9458fb9255f0befce1c7239ba6e5d2c58ed4b82c2073.js" integrity="sha256-OSjT0hcrwLX3XZRY&#43;5JV8L784ccjm6bl0sWO1LgsIHM="></script>
+<script defer src="/js/search/search.1d980f84df11f3eb7c8c5f17f541d49a0611608df179dd74fa7f06225eb56ace.js" integrity="sha256-HZgPhN8R8&#43;t8jF8X9UHUmgYRYI3xed10&#43;n8GIl61as4="></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
+
+</head>
+<body class="notransition">
+  <div id="aside-overlay"></div>
+  <div id="container">
+    <header id="main-header"><div role="navigation" aria-label="Main">
+  <div class="nav-left">
+    <a href="http://localhost:1313/" style="color: inherit;">shark-asmx</a>
+  </div>
+  <div class="nav-right">
+    <div style="position:absolute;width:0px;height:0px;">
+      <div id="nav-dropdown-menu" class="hidden" href="#">
+    <div class="nav-item">
+      <a href="/posts"
+      >posts</a>
     </div>
-    <p class="lead"></p>
-    <h4 id="windows-pool">Windows Pool</h4>
+</div>
+    </div>
+    <a id="nav-dropdown-button" href="#"><svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</a>
+    <div id="nav-menu">
+    <div class="nav-item">
+      <a href="/posts"
+      >posts</a>
+    </div>
+</div>
+    <a id="theme-switcher" href="#">
+<svg class="light-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 3V4M12 20V21M4 12H3M6.31412 6.31412L5.5 5.5M17.6859 6.31412L18.5 5.5M6.31412 17.69L5.5 18.5001M17.6859 17.69L18.5 18.5001M21 12H20M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+<svg class="dark-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3.32031 11.6835C3.32031 16.6541 7.34975 20.6835 12.3203 20.6835C16.1075 20.6835 19.3483 18.3443 20.6768 15.032C19.6402 15.4486 18.5059 15.6834 17.3203 15.6834C12.3497 15.6834 8.32031 11.654 8.32031 6.68342C8.32031 5.50338 8.55165 4.36259 8.96453 3.32996C5.65605 4.66028 3.32031 7.89912 3.32031 11.6835Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</a>
+  </div>
+</div>
+</header>
+    <div class="flex grow">
+      <div id="main-pane">
+        <main id="main-content"><div class="single-header">
+<ol class="breadcrumbs" itemscope itemtype="https://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+      <a itemprop="item" href="http://localhost:1313/">
+        <span itemprop="name">Home</span>
+      </a>
+      <meta itemprop="position" content='1' />
+    </li>
+    <span>&nbsp»&nbsp</span>
+    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+      <a itemprop="item" href="http://localhost:1313/posts/">
+        <span itemprop="name">Posts</span>
+      </a>
+      <meta itemprop="position" content='2' />
+    </li>
+    <span>&nbsp»&nbsp</span>
+</ol>
+<h1>Windows Objects: Structure, Headers, and Internal Mechanics</h1><time class="dim" datetime="2025-03-12T08:23:06&#43;05:30">March 12, 2025</time><div class="term-container"><div class="tag">
+        <a href="http://localhost:1313/tags/windows-internals/">#Windows Internals</a>
+      </div><div class="tag">
+        <a href="http://localhost:1313/tags/kernel-objects/">#Kernel Objects</a>
+      </div><div class="tag">
+        <a href="http://localhost:1313/tags/debugging/">#Debugging</a>
+      </div><div class="tag">
+        <a href="http://localhost:1313/tags/reverse-engineering/">#Reverse Engineering</a>
+      </div></ol></div>
+  <section class="page-section"><h4 id="windows-pool">Windows Pool</h4>
 <p>Windows Pool is memory allocated in kernel mode for core system components like drivers, can operate their activities. There are</p>
 <ul>
 <li>
@@ -106,13 +165,13 @@
 </span></span><span class="line"><span class="cl">    
 </span></span></code></pre></div><h4 id="inspecting-cmdexe">Inspecting cmd.exe</h4>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rs" data-lang="rs"><span class="line"><span class="cl"><span class="mi">0</span>: <span class="nc">kd</span><span class="o">&gt;</span><span class="w"> </span><span class="o">!</span><span class="n">process</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="n">cmd</span><span class="p">.</span><span class="n">exe</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="no">PROCESS</span><span class="w"> 	
+</span></span></span><span class="line"><span class="cl"><span class="no">PROCESS</span><span class="w"> 	
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">SessionId</span>: <span class="mi">1</span><span class="w">  </span><span class="n">Cid</span>: <span class="mi">1164</span><span class="w">    </span><span class="n">Peb</span>: <span class="mi">72</span><span class="n">ce659000</span><span class="w">  </span><span class="n">ParentCid</span>: <span class="mi">1148</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">DirBase</span>: <span class="mf">5e2</span><span class="n">bc002</span><span class="w">  </span><span class="n">ObjectTable</span>: <span class="nc">ffff99011473e500</span><span class="w">  </span><span class="n">HandleCount</span>: <span class="mf">245.</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Image</span>: <span class="nc">cmd</span><span class="p">.</span><span class="n">exe</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="mi">0</span>: <span class="nc">kd</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dt</span><span class="w"> </span><span class="n">nt</span><span class="o">!</span><span class="no">_EPROCESS</span><span class="w"> </span><span class="n">ffffc509bf28b080</span><span class="w"> </span><span class="o">-</span><span class="n">y</span><span class="w"> </span><span class="n">Image</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="mi">0</span>: <span class="nc">kd</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dt</span><span class="w"> </span><span class="n">nt</span><span class="o">!</span><span class="no">_EPROCESS</span><span class="w"> </span><span class="n">ffffc509bf28b080</span><span class="w"> </span><span class="o">-</span><span class="n">y</span><span class="w"> </span><span class="n">Image</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="o">+</span><span class="mh">0x464</span><span class="w"> </span><span class="n">ImageNotifyDone</span><span class="w"> </span>: <span class="mi">0</span><span class="n">y1</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="o">+</span><span class="mh">0x5a0</span><span class="w"> </span><span class="n">ImageFilePointer</span><span class="w"> </span>: <span class="mh">0xffffc509</span><span class="err">`</span><span class="n">c095e2b0</span><span class="w"> </span><span class="no">_FILE_OBJECT</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="o">+</span><span class="mh">0x5a8</span><span class="w"> </span><span class="n">ImageFileName</span><span class="w"> </span>: <span class="p">[</span><span class="mi">15</span><span class="p">]</span><span class="w">  </span><span class="s">&#34;cmd.exe&#34;</span><span class="w">
@@ -233,55 +292,55 @@
 </ul>
 <h5 id="object_header-flags">OBJECT_HEADER Flags</h5>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define OB_FLAG_NEW_OBJECT              0x01 </span><span class="c1">// NewObject (New Object Created, not exists in Pool)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#define OB_FLAG_KERNEL_OBJECT           0x02 </span><span class="c1">// KernelObject (Object can only have Kernel handles)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#define OB_FLAG_CREATOR_INFO            0x04 </span><span class="c1">// KernelOnlyAccess (Kernel can only open &amp; access handles)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#define OB_FLAG_EXCLUSIVE_OBJECT        0x08 </span><span class="c1">// ExclusiveObject (Process who created can only open &amp; access it)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#define OB_FLAG_PERMANENT_OBJECT        0x10 </span><span class="c1">// PermanentObject (Persits even HandleCount &amp; PointerCount drops to 0)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#define OB_FLAG_DEFAULT_SECURITY_QUOTA  0x20 </span><span class="c1">// DefaultSecurityQuota (defines SecurityDescriptor)
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#define OB_FLAG_SINGLE_HANDLE_ENTRY     0x40 </span><span class="c1">// SingleHandleEntry (Only contains one entry OBJECT_HEADER_HANDLE_INFO )
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#define OB_FLAG_DELETED_INLINE          0x80 </span><span class="c1">// DeletedInline (Object in queue for deletion)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define OB_FLAG_KERNEL_OBJECT           0x02 </span><span class="c1">// KernelObject (Object can only have Kernel handles)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define OB_FLAG_CREATOR_INFO            0x04 </span><span class="c1">// KernelOnlyAccess (Kernel can only open &amp; access handles)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define OB_FLAG_EXCLUSIVE_OBJECT        0x08 </span><span class="c1">// ExclusiveObject (Process who created can only open &amp; access it)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define OB_FLAG_PERMANENT_OBJECT        0x10 </span><span class="c1">// PermanentObject (Persits even HandleCount &amp; PointerCount drops to 0)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define OB_FLAG_DEFAULT_SECURITY_QUOTA  0x20 </span><span class="c1">// DefaultSecurityQuota (defines SecurityDescriptor)
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define OB_FLAG_SINGLE_HANDLE_ENTRY     0x40 </span><span class="c1">// SingleHandleEntry (Only contains one entry OBJECT_HEADER_HANDLE_INFO )
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define OB_FLAG_DELETED_INLINE          0x80 </span><span class="c1">// DeletedInline (Object in queue for deletion)
 </span></span></span></code></pre></div><h5 id="optional-objectheader">Optional ObjectHeader</h5>
 <table>
-  <thead>
-      <tr>
-          <th>Optional Object Header</th>
-          <th>(ObpInfoMaskToOffset)</th>
-      </tr>
-  </thead>
-  <tbody>
-      <tr>
-          <td>_OBJECT_HEADER_CREATOR_INFO</td>
-          <td>0                    = 0x1</td>
-      </tr>
-      <tr>
-          <td>_OBJECT_HEADER_NAME_INFO</td>
-          <td>InfoMask &amp; 0x3       = 0x2</td>
-      </tr>
-      <tr>
-          <td>_OBJECT_HEADER_HANDLE_INFO</td>
-          <td>InfoMask &amp; 0x7       = 0x4</td>
-      </tr>
-      <tr>
-          <td>_OBJECT_HEADER_QUOTA_INFO</td>
-          <td>InfoMask &amp; 0xF       = 0x8</td>
-      </tr>
-      <tr>
-          <td>_OBJECT_HEADER_PROCESS_INFO</td>
-          <td>InfoMask &amp; 0x1F      = 0x10</td>
-      </tr>
-      <tr>
-          <td>_OBJECT_HEADER_AUDIT_INFO</td>
-          <td>InfoMask &amp; 0x3F      = 0x20</td>
-      </tr>
-      <tr>
-          <td>_OBJECT_HEADER_EXTENDED_INFO</td>
-          <td>InfoMask &amp; 0x7F      = 0x40</td>
-      </tr>
-      <tr>
-          <td>_OBJECT_HEADER_PADDING_INFO</td>
-          <td>InfoMask &amp; 0xFF      = 0x80</td>
-      </tr>
-  </tbody>
+	<thead>
+			<tr>
+					<th>Optional Object Header</th>
+					<th>(ObpInfoMaskToOffset)</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>_OBJECT_HEADER_CREATOR_INFO</td>
+					<td>0                    = 0x1</td>
+			</tr>
+			<tr>
+					<td>_OBJECT_HEADER_NAME_INFO</td>
+					<td>InfoMask &amp; 0x3       = 0x2</td>
+			</tr>
+			<tr>
+					<td>_OBJECT_HEADER_HANDLE_INFO</td>
+					<td>InfoMask &amp; 0x7       = 0x4</td>
+			</tr>
+			<tr>
+					<td>_OBJECT_HEADER_QUOTA_INFO</td>
+					<td>InfoMask &amp; 0xF       = 0x8</td>
+			</tr>
+			<tr>
+					<td>_OBJECT_HEADER_PROCESS_INFO</td>
+					<td>InfoMask &amp; 0x1F      = 0x10</td>
+			</tr>
+			<tr>
+					<td>_OBJECT_HEADER_AUDIT_INFO</td>
+					<td>InfoMask &amp; 0x3F      = 0x20</td>
+			</tr>
+			<tr>
+					<td>_OBJECT_HEADER_EXTENDED_INFO</td>
+					<td>InfoMask &amp; 0x7F      = 0x40</td>
+			</tr>
+			<tr>
+					<td>_OBJECT_HEADER_PADDING_INFO</td>
+					<td>InfoMask &amp; 0xFF      = 0x80</td>
+			</tr>
+	</tbody>
 </table>
 <p>InfoMask : <code>0x88</code> -&gt; <strong>_OBJECT_HEADER_QUOTA_INFO</strong></p>
 <p><strong>Decoding InfoMask</strong></p>
@@ -310,14 +369,14 @@
 </span></span><span class="line"><span class="cl"><span class="c1">#_OBJECT_HEADER_QUOTA_INFO</span>
 </span></span><span class="line"><span class="cl"><span class="c1">#_OBJECT_HEADER_PADDING_INFO</span>
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rs" data-lang="rs"><span class="line"><span class="cl"><span class="mi">0</span>: <span class="nc">kd</span><span class="o">&gt;</span><span class="w"> </span><span class="n">db</span><span class="w"> </span><span class="n">ffffc509bf28b080</span><span class="o">-</span><span class="mi">80</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">ffffc509</span><span class="err">`</span><span class="n">bf28b000</span><span class="w">  </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="n">d0</span><span class="w"> </span><span class="mi">02</span><span class="w"> </span><span class="mi">50</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="mi">6</span><span class="n">f</span><span class="w"> </span><span class="mi">63</span><span class="o">-</span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">  </span><span class="o">....</span><span class="n">Proc</span><span class="o">........</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">ffffc509</span><span class="err">`</span><span class="n">bf28b010</span><span class="w">  </span><span class="mi">01</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="o">-</span><span class="mi">8</span><span class="n">e</span><span class="w"> </span><span class="mi">01</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">  </span><span class="o">................</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">ffffc509</span><span class="err">`</span><span class="n">bf28b020</span><span class="w">  </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="o">-</span><span class="mi">01</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="mi">53</span><span class="w"> </span><span class="mi">5</span><span class="n">e</span><span class="w"> </span><span class="mi">20</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">  </span><span class="o">........</span><span class="p">.</span><span class="mi">0</span><span class="n">S</span><span class="o">^</span><span class="w"> </span><span class="o">..</span><span class="p">.</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">ffffc509</span><span class="err">`</span><span class="n">bf28b030</span><span class="w">  </span><span class="mi">00</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">48</span><span class="w"> </span><span class="mi">0</span><span class="n">c</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="o">-</span><span class="mi">78</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="n">fe</span><span class="w"> </span><span class="mi">7</span><span class="n">f</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">  </span><span class="o">....</span><span class="n">H</span><span class="o">..</span><span class="p">.</span><span class="n">x</span><span class="o">......</span><span class="p">.</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">ffffc509</span><span class="err">`</span><span class="n">bf28b040</span><span class="w">  </span><span class="n">c0</span><span class="w"> </span><span class="mi">6</span><span class="n">c</span><span class="w"> </span><span class="n">e8</span><span class="w"> </span><span class="n">ba</span><span class="w"> </span><span class="mi">09</span><span class="w"> </span><span class="n">c5</span><span class="w"> </span><span class="n">ff</span><span class="w"> </span><span class="n">ff</span><span class="o">-</span><span class="mi">00</span><span class="w"> </span><span class="n">e0</span><span class="w"> </span><span class="mi">05</span><span class="w"> </span><span class="mi">5</span><span class="n">e</span><span class="w"> </span><span class="n">fe</span><span class="w"> </span><span class="mi">7</span><span class="n">f</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">  </span><span class="p">.</span><span class="n">l</span><span class="o">........</span><span class="p">.</span><span class="o">^....</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">ffffc509</span><span class="err">`</span><span class="n">bf28b050</span><span class="w">  </span><span class="mi">64</span><span class="w"> </span><span class="n">fe</span><span class="w"> </span><span class="mi">03</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="o">-</span><span class="mi">07</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">  </span><span class="n">d</span><span class="o">..............</span><span class="p">.</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">ffffc509</span><span class="err">`</span><span class="n">bf28b060</span><span class="w">  </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="o">-</span><span class="mi">0</span><span class="n">c</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">88</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="n">fe</span><span class="w"> </span><span class="mi">7</span><span class="n">f</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">  </span><span class="o">................</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">ffffc509</span><span class="err">`</span><span class="n">bf28b070</span><span class="w">  </span><span class="n">c0</span><span class="w"> </span><span class="mi">6</span><span class="n">c</span><span class="w"> </span><span class="n">e8</span><span class="w"> </span><span class="n">ba</span><span class="w"> </span><span class="mi">09</span><span class="w"> </span><span class="n">c5</span><span class="w"> </span><span class="n">ff</span><span class="w"> </span><span class="n">ff</span><span class="o">-</span><span class="mi">6</span><span class="n">e</span><span class="w"> </span><span class="mi">93</span><span class="w"> </span><span class="n">fa</span><span class="w"> </span><span class="mi">11</span><span class="w"> </span><span class="mi">01</span><span class="w"> </span><span class="mi">99</span><span class="w"> </span><span class="n">ff</span><span class="w"> </span><span class="n">ff</span><span class="w">  </span><span class="p">.</span><span class="n">l</span><span class="o">......</span><span class="n">n</span><span class="o">......</span><span class="p">.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">ffffc509</span><span class="err">`</span><span class="n">bf28b000</span><span class="w">  </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="n">d0</span><span class="w"> </span><span class="mi">02</span><span class="w"> </span><span class="mi">50</span><span class="w"> </span><span class="mi">72</span><span class="w"> </span><span class="mi">6</span><span class="n">f</span><span class="w"> </span><span class="mi">63</span><span class="o">-</span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">  </span><span class="o">....</span><span class="n">Proc</span><span class="o">........</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">ffffc509</span><span class="err">`</span><span class="n">bf28b010</span><span class="w">  </span><span class="mi">01</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="o">-</span><span class="mi">8</span><span class="n">e</span><span class="w"> </span><span class="mi">01</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">  </span><span class="o">................</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">ffffc509</span><span class="err">`</span><span class="n">bf28b020</span><span class="w">  </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="o">-</span><span class="mi">01</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="mi">53</span><span class="w"> </span><span class="mi">5</span><span class="n">e</span><span class="w"> </span><span class="mi">20</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">  </span><span class="o">........</span><span class="p">.</span><span class="mi">0</span><span class="n">S</span><span class="o">^</span><span class="w"> </span><span class="o">..</span><span class="p">.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">ffffc509</span><span class="err">`</span><span class="n">bf28b030</span><span class="w">  </span><span class="mi">00</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">48</span><span class="w"> </span><span class="mi">0</span><span class="n">c</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="o">-</span><span class="mi">78</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="n">fe</span><span class="w"> </span><span class="mi">7</span><span class="n">f</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">  </span><span class="o">....</span><span class="n">H</span><span class="o">..</span><span class="p">.</span><span class="n">x</span><span class="o">......</span><span class="p">.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">ffffc509</span><span class="err">`</span><span class="n">bf28b040</span><span class="w">  </span><span class="n">c0</span><span class="w"> </span><span class="mi">6</span><span class="n">c</span><span class="w"> </span><span class="n">e8</span><span class="w"> </span><span class="n">ba</span><span class="w"> </span><span class="mi">09</span><span class="w"> </span><span class="n">c5</span><span class="w"> </span><span class="n">ff</span><span class="w"> </span><span class="n">ff</span><span class="o">-</span><span class="mi">00</span><span class="w"> </span><span class="n">e0</span><span class="w"> </span><span class="mi">05</span><span class="w"> </span><span class="mi">5</span><span class="n">e</span><span class="w"> </span><span class="n">fe</span><span class="w"> </span><span class="mi">7</span><span class="n">f</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">  </span><span class="p">.</span><span class="n">l</span><span class="o">........</span><span class="p">.</span><span class="o">^....</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">ffffc509</span><span class="err">`</span><span class="n">bf28b050</span><span class="w">  </span><span class="mi">64</span><span class="w"> </span><span class="n">fe</span><span class="w"> </span><span class="mi">03</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="o">-</span><span class="mi">07</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">  </span><span class="n">d</span><span class="o">..............</span><span class="p">.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">ffffc509</span><span class="err">`</span><span class="n">bf28b060</span><span class="w">  </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="o">-</span><span class="mi">0</span><span class="n">c</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">88</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="n">fe</span><span class="w"> </span><span class="mi">7</span><span class="n">f</span><span class="w"> </span><span class="mi">00</span><span class="w"> </span><span class="mi">00</span><span class="w">  </span><span class="o">................</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">ffffc509</span><span class="err">`</span><span class="n">bf28b070</span><span class="w">  </span><span class="n">c0</span><span class="w"> </span><span class="mi">6</span><span class="n">c</span><span class="w"> </span><span class="n">e8</span><span class="w"> </span><span class="n">ba</span><span class="w"> </span><span class="mi">09</span><span class="w"> </span><span class="n">c5</span><span class="w"> </span><span class="n">ff</span><span class="w"> </span><span class="n">ff</span><span class="o">-</span><span class="mi">6</span><span class="n">e</span><span class="w"> </span><span class="mi">93</span><span class="w"> </span><span class="n">fa</span><span class="w"> </span><span class="mi">11</span><span class="w"> </span><span class="mi">01</span><span class="w"> </span><span class="mi">99</span><span class="w"> </span><span class="n">ff</span><span class="w"> </span><span class="n">ff</span><span class="w">  </span><span class="p">.</span><span class="n">l</span><span class="o">......</span><span class="n">n</span><span class="o">......</span><span class="p">.</span><span class="w">
 </span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">0: kd&gt; dt ntkrnlmp!_OBJECT_HEADER_*
 </span></span><span class="line"><span class="cl">          ntkrnlmp!_OBJECT_HEADER_QUOTA_INFO
 </span></span><span class="line"><span class="cl">          ntkrnlmp!_OBJECT_HEADER_PROCESS_INFO
@@ -342,8 +401,8 @@
 <h5 id="locating-object_header">Locating OBJECT_HEADER</h5>
 <p>The Optional Headers would appear before main OBJECT_HEADER and corresponding OptionalHeader result bit value would be stored in InfoMask.</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rs" data-lang="rs"><span class="line"><span class="cl"><span class="c1">// ObpInfoMaskToOffset + ResultBit Value of QUOTA_INFO
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="mi">0</span>: <span class="nc">kd</span><span class="o">&gt;</span><span class="w"> </span><span class="n">db</span><span class="w"> </span><span class="n">ObpInfoMaskToOffset</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x8</span><span class="w"> </span><span class="n">L1</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">fffff807</span><span class="err">`</span><span class="mi">1</span><span class="n">ec3de28</span><span class="w">  </span><span class="mi">20</span><span class="w">   
+</span></span></span><span class="line"><span class="cl"><span class="mi">0</span>: <span class="nc">kd</span><span class="o">&gt;</span><span class="w"> </span><span class="n">db</span><span class="w"> </span><span class="n">ObpInfoMaskToOffset</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x8</span><span class="w"> </span><span class="n">L1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">fffff807</span><span class="err">`</span><span class="mi">1</span><span class="n">ec3de28</span><span class="w">  </span><span class="mi">20</span><span class="w">   
 </span></span></span></code></pre></div><ul>
 <li>Subtract it from <code>_OBJECT_HEADER -  _OBJECT_HEADER_QUOTA_INFO</code></li>
 </ul>
@@ -626,11 +685,11 @@
 </span></span><span class="line"><span class="cl">   +0x008 AllocatorBackTraceIndex : 0xe9f8
 </span></span><span class="line"><span class="cl">   +0x00a PoolTagHash      : 0xd7e4
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rs" data-lang="rs"><span class="line"><span class="cl"><span class="mi">0</span>: <span class="nc">kd</span><span class="o">&gt;</span><span class="w"> </span><span class="o">!</span><span class="n">object</span><span class="w"> </span><span class="n">ffff938cd7e86080</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Object</span>: <span class="nc">ffff938cd7e86080</span><span class="w">  </span><span class="n">Type</span>: <span class="p">(</span><span class="n">ffff938cd7eabbc0</span><span class="p">)</span><span class="w"> </span><span class="n">Process</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">Object</span>: <span class="nc">ffff938cd7e86080</span><span class="w">  </span><span class="n">Type</span>: <span class="p">(</span><span class="n">ffff938cd7eabbc0</span><span class="p">)</span><span class="w"> </span><span class="n">Process</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ObjectHeader</span>: <span class="nc">ffff938cd7e86050</span><span class="w"> </span><span class="p">(</span><span class="n">new</span><span class="w"> </span><span class="n">version</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">HandleCount</span>: <span class="mi">4</span><span class="w">  </span><span class="n">PointerCount</span>: <span class="mi">131200</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="mi">0</span>: <span class="nc">kd</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dt</span><span class="w"> </span><span class="n">nt</span><span class="o">!</span><span class="no">_OBJECT_HEADER</span><span class="w"> </span><span class="n">ffff938cd7e86080</span><span class="o">-</span><span class="mi">30</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="mi">0</span>: <span class="nc">kd</span><span class="o">&gt;</span><span class="w"> </span><span class="n">dt</span><span class="w"> </span><span class="n">nt</span><span class="o">!</span><span class="no">_OBJECT_HEADER</span><span class="w"> </span><span class="n">ffff938cd7e86080</span><span class="o">-</span><span class="mi">30</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="o">+</span><span class="mh">0x000</span><span class="w"> </span><span class="n">PointerCount</span><span class="w">     </span>: <span class="mi">0</span><span class="n">n131200</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="o">+</span><span class="mh">0x008</span><span class="w"> </span><span class="n">HandleCount</span><span class="w">      </span>: <span class="mi">0</span><span class="n">n4</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="o">+</span><span class="mh">0x008</span><span class="w"> </span><span class="n">NextToFree</span><span class="w">       </span>: <span class="mh">0x00000000</span><span class="err">`</span><span class="mi">00000004</span><span class="w"> </span><span class="n">Void</span><span class="w">
@@ -683,60 +742,34 @@
 <p><a href="https://www.amazon.in/Art-Memory-Forensics-Detecting-Malware/dp/1118825098">The-Art-of-Memory-Forensics</a></p>
 </li>
 </ul>
-
-    <h4><a href="http://localhost:1313/">Back to Home</a></h4>
+</section></main>
+        <footer id="main-footer"><div class="footer">
+  <a href="#">Scroll to Top</a>
+  <div class="footer-copyright">
+    <div class="dim">© 2026 </div>
+    <div>Made with ❤️ and powered by <a href="https://github.com/math-queiroz/rusty-typewriter" target="_blank">Rusty Typewriter</a> theme for <a href="https://gohugo.io/" target="_blank">Hugo</a></div>
+  </div>
 </div>
-
-
-        </div><footer class="container">
-    <hr class="soften">
-    <p>
-&copy; 
-
-    
-
-<span id="thisyear">2026</span>
-
-
-</p>
-    <p class="text-center">
-        
-        
-        
-        
-        
-    </p>
 </footer>
-
-</body><link rel="stylesheet" href="/css/bootstrap.css">
-<link rel="stylesheet" href="/css/bootstrap-responsive.css">
-<link rel="stylesheet" href="/css/style.css">
-
-<script src="/js/jquery.js"></script>
-<script src="/js/bootstrap-386.js"></script>
-<script src="/js/bootstrap-transition.js"></script>
-<script src="/js/bootstrap-alert.js"></script>
-<script src="/js/bootstrap-modal.js"></script>
-<script src="/js/bootstrap-dropdown.js"></script>
-<script src="/js/bootstrap-scrollspy.js"></script>
-<script src="/js/bootstrap-tab.js"></script>
-<script src="/js/bootstrap-tooltip.js"></script>
-<script src="/js/bootstrap-popover.js"></script>
-<script src="/js/bootstrap-button.js"></script>
-<script src="/js/bootstrap-collapse.js"></script>
-<script src="/js/bootstrap-carousel.js"></script>
-<script src="/js/bootstrap-typeahead.js"></script>
-<script src="/js/bootstrap-affix.js"></script>
-<script>
-    _386 = { 
-        fastLoad: null ,
-        onePass: null , 
-        speedFactor: 10 
-    };
-
-    
-    function ThisYear() {
-        document.getElementById('thisyear').innerHTML = new Date().getFullYear();
-    };
-</script>
+      </div><a id="aside-toggle-button" href="#">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor">
+<path d="M169.4 297.4C156.9 309.9 156.9 330.2 169.4 342.7L361.4 534.7C373.9 547.2 394.2 547.2 406.7 534.7C419.2 522.2 419.2 501.9 406.7 489.4L237.3 320L406.6 150.6C419.1 138.1 419.1 117.8 406.6 105.3C394.1 92.8 373.8 92.8 361.3 105.3L169.3 297.3z"/>
+</svg>
+</a>
+  <aside id="side-pane" class="side-sticky">
+<div class="side-details">
+    <span>2997 words</span>
+    <span>25 - 32 minutes read</span></div><h3>Table Of Contents</h3><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+</nav><h3>Attachments</h3>
+    <ul><li><a href="http://localhost:1313/posts/windows-objects/image-2.png">image-2.png</a></li><li><a href="http://localhost:1313/posts/windows-objects/image-3.png">image-3.png</a></li></ul><h3>Related</h3>
+    <ul><li><a href="/posts/windows-shellcode2/">Windows Shellcode Development &amp; Debugging with WinDbg: A Hands-On Guide (Part 2)</a></li><li><a href="/posts/windows-shellcode/">Windows Shellcode Development &amp; Debugging with WinDbg: A Hands-On Guide (Part 1)</a></li><li><a href="/posts/pe-parse-windbg2/">PE Parsing: A Step-by-Step Guide with WinDbg - Part 2</a></li><li><a href="/posts/pe-parse-windbg/">PE Parsing: A Step-by-Step Guide with WinDbg - Part 1</a></li></ul></aside></div>
+  </div>
+</body>
 </html>

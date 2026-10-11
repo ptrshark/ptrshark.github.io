@@ -1,47 +1,118 @@
 <!DOCTYPE html>
-<html lang="en"><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
-    <title>shark-asmx</title>
-    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-    <meta content="utf-8" http-equiv="encoding">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="format-detection" content="telephone=no" />
-    <meta name="theme-color" content="#000084" />
-    <link rel="icon" href="http://localhost:1313//favicon.ico">
-    <link rel="canonical" href="http://localhost:1313/">
-    
-    
-</head>
-<body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"></button>
-            <a class="brand" href="http://localhost:1313/">shark-asmx</a>
-            <div class="nav-collapse collapse">
-                <ul class="nav">
-                    
-                    
-                        
-                            <li>
-                                <a href="/posts">
-                                    
-                                    <span>posts</span>
-                                </a>
-                            </li>
-                        
-                    
-                </ul>
-            </div>
-        </div>
-    </div>
-</nav><div id="content" class="container">
+<html lang="en" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<div class="row-fluid navmargin">
-    <div class="page-header">
-        <h1>Windows Shellcode Development &amp; Debugging with WinDbg: A Hands-On Guide (Part 2) - Tue, Jan 21, 2025</h1>
+<title>Windows Shellcode Development &amp; Debugging with WinDbg: A Hands-On Guide (Part 2) | shark-asmx</title>
+<link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml" /><meta property="og:url" content="http://localhost:1313/posts/windows-shellcode2/">
+	<meta property="og:site_name" content="shark-asmx">
+	<meta property="og:title" content="Windows Shellcode Development & Debugging with WinDbg: A Hands-On Guide (Part 2)">
+	<meta property="og:description" content="A comprehensive guide to understanding and creating Windows shellcode from scratch for exploit development. This article includes practical insights into using WinDbg for effective debugging and analysis.">
+	<meta property="og:locale" content="en">
+	<meta property="og:type" content="article">
+		<meta property="article:section" content="posts">
+		<meta property="article:published_time" content="2025-01-21T07:05:40+05:30">
+		<meta property="article:modified_time" content="2025-01-21T07:05:40+05:30">
+		<meta property="article:tag" content="Windows Shellcode">
+		<meta property="article:tag" content="Malware Analysis">
+		<meta property="article:tag" content="Exploit Development">
+		<meta property="article:tag" content="Assembly">
+		<meta property="article:tag" content="WinDbg">
+		<meta property="article:tag" content="Reverse Engineering">
+
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:title" content="Windows Shellcode Development & Debugging with WinDbg: A Hands-On Guide (Part 2)">
+	<meta name="twitter:description" content="A comprehensive guide to understanding and creating Windows shellcode from scratch for exploit development. This article includes practical insights into using WinDbg for effective debugging and analysis.">
+
+    <link rel="stylesheet" href="/css/root.css">
+    <link rel="stylesheet" href="/css/bundle.css">
+
+      <script src="/js/bundle.js"></script><script defer src="/js/search/flexsearch.compact.3928d3d2172bc0b5f75d9458fb9255f0befce1c7239ba6e5d2c58ed4b82c2073.js" integrity="sha256-OSjT0hcrwLX3XZRY&#43;5JV8L784ccjm6bl0sWO1LgsIHM="></script>
+<script defer src="/js/search/search.1d980f84df11f3eb7c8c5f17f541d49a0611608df179dd74fa7f06225eb56ace.js" integrity="sha256-HZgPhN8R8&#43;t8jF8X9UHUmgYRYI3xed10&#43;n8GIl61as4="></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
+
+</head>
+<body class="notransition">
+  <div id="aside-overlay"></div>
+  <div id="container">
+    <header id="main-header"><div role="navigation" aria-label="Main">
+  <div class="nav-left">
+    <a href="http://localhost:1313/" style="color: inherit;">shark-asmx</a>
+  </div>
+  <div class="nav-right">
+    <div style="position:absolute;width:0px;height:0px;">
+      <div id="nav-dropdown-menu" class="hidden" href="#">
+    <div class="nav-item">
+      <a href="/posts"
+      >posts</a>
     </div>
-    <p class="lead"></p>
-    <h2 id="prerequisites">Prerequisites</h2>
+</div>
+    </div>
+    <a id="nav-dropdown-button" href="#"><svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</a>
+    <div id="nav-menu">
+    <div class="nav-item">
+      <a href="/posts"
+      >posts</a>
+    </div>
+</div>
+    <a id="theme-switcher" href="#">
+<svg class="light-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 3V4M12 20V21M4 12H3M6.31412 6.31412L5.5 5.5M17.6859 6.31412L18.5 5.5M6.31412 17.69L5.5 18.5001M17.6859 17.69L18.5 18.5001M21 12H20M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+<svg class="dark-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3.32031 11.6835C3.32031 16.6541 7.34975 20.6835 12.3203 20.6835C16.1075 20.6835 19.3483 18.3443 20.6768 15.032C19.6402 15.4486 18.5059 15.6834 17.3203 15.6834C12.3497 15.6834 8.32031 11.654 8.32031 6.68342C8.32031 5.50338 8.55165 4.36259 8.96453 3.32996C5.65605 4.66028 3.32031 7.89912 3.32031 11.6835Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</a>
+  </div>
+</div>
+</header>
+    <div class="flex grow">
+      <div id="main-pane">
+        <main id="main-content"><div class="single-header">
+<ol class="breadcrumbs" itemscope itemtype="https://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+      <a itemprop="item" href="http://localhost:1313/">
+        <span itemprop="name">Home</span>
+      </a>
+      <meta itemprop="position" content='1' />
+    </li>
+    <span>&nbsp»&nbsp</span>
+    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+      <a itemprop="item" href="http://localhost:1313/posts/">
+        <span itemprop="name">Posts</span>
+      </a>
+      <meta itemprop="position" content='2' />
+    </li>
+    <span>&nbsp»&nbsp</span>
+</ol>
+<h1>Windows Shellcode Development &amp; Debugging with WinDbg: A Hands-On Guide (Part 2)</h1><time class="dim" datetime="2025-01-21T07:05:40&#43;05:30">January 21, 2025</time><div class="term-container"><div class="tag">
+        <a href="http://localhost:1313/tags/windows-shellcode/">#Windows Shellcode</a>
+      </div><div class="tag">
+        <a href="http://localhost:1313/tags/malware-analysis/">#Malware Analysis</a>
+      </div><div class="tag">
+        <a href="http://localhost:1313/tags/exploit-development/">#Exploit Development</a>
+      </div><div class="tag">
+        <a href="http://localhost:1313/tags/assembly/">#Assembly</a>
+      </div><div class="tag">
+        <a href="http://localhost:1313/tags/windbg/">#WinDbg</a>
+      </div><div class="tag">
+        <a href="http://localhost:1313/tags/reverse-engineering/">#Reverse Engineering</a>
+      </div><div class="tag">
+        <a href="http://localhost:1313/tags/debugging/">#Debugging</a>
+      </div><div class="tag">
+        <a href="http://localhost:1313/tags/low-level/">#Low-Level</a>
+      </div><div class="tag">
+        <a href="http://localhost:1313/tags/windows-internals/">#Windows Internals</a>
+      </div></ol></div>
+  <section class="page-section"><h2 id="prerequisites">Prerequisites</h2>
 <p>Before diving into the content of this blog, it is recommended to familiarize yourself with the following topics.</p>
 <ol>
 <li><strong><a href="https://5h4rrk.github.io/posts/pe-parse-windbg/">PE Parsing with WinDbg</a></strong></li>
@@ -82,9 +153,9 @@
 </ul>
 <p><code>shellcode.asm</code></p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="n">bits</span><span class="w"> </span><span class="mi">64</span><span class="w"> 
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">section</span><span class="w"> </span><span class="p">.</span><span class="n">text</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">section</span><span class="w"> </span><span class="p">.</span><span class="n">text</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">global</span><span class="w"> </span><span class="n">start</span><span class="w"> 
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">start</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">start</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">push</span><span class="w"> </span><span class="n">rbp</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mov</span><span class="w">  </span><span class="n">rbp</span><span class="p">,</span><span class="w"> </span><span class="n">rsp</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sub</span><span class="w">  </span><span class="n">rsp</span><span class="p">,</span><span class="w"> </span><span class="mh">0x1000</span><span class="w">                    </span><span class="p">;</span><span class="w"> </span><span class="mi">4096</span><span class="w"> </span><span class="n">bytes</span><span class="w"> 
@@ -96,7 +167,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mov</span><span class="w"> </span><span class="n">rax</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">rax</span><span class="p">]</span><span class="w">                      </span><span class="p">;</span><span class="w"> </span><span class="no">_LDR_DATA_TABLE_ENTRY</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sub</span><span class="w"> </span><span class="n">rax</span><span class="p">,</span><span class="w"> </span><span class="mh">0x10</span><span class="w">                       </span><span class="p">;</span><span class="w"> </span><span class="no">_LDR_DATA_TABLE_ENTRY</span><span class="p">.</span><span class="n">InMemoryOrderLinks</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">find_names</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">find_names</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">mov</span><span class="w"> </span><span class="p">[</span><span class="n">rsp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x08</span><span class="p">],</span><span class="w"> </span><span class="n">rax</span><span class="w">               </span><span class="p">;</span><span class="w"> </span><span class="no">_LDR_DATA_TABLE_ENTRY</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">add</span><span class="w"> </span><span class="n">rax</span><span class="p">,</span><span class="w"> </span><span class="mh">0x58</span><span class="w">                       </span><span class="p">;</span><span class="w">  </span><span class="no">_LDR_DATA_TABLE_ENTRY</span><span class="p">.</span><span class="n">BaseDllName</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">xor</span><span class="w"> </span><span class="n">rcx</span><span class="p">,</span><span class="w"> </span><span class="n">rcx</span><span class="w">            
@@ -107,28 +178,28 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">dec</span><span class="w"> </span><span class="n">rdx</span><span class="w">                             </span><span class="p">;</span><span class="w"> </span><span class="n">Decrements</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">Counter</span><span class="w"> </span><span class="n">Value</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mov</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="n">rsp</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">rdx</span><span class="w">                   </span><span class="p">;</span><span class="w"> </span><span class="n">Updates</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">counter</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">stack</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">is_finished</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">is_finished</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">cmp</span><span class="w"> </span><span class="n">rdx</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">je</span><span class="w"> </span><span class="n">load_address</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">jmp</span><span class="w"> </span><span class="n">iterate_chars</span><span class="w">                    </span><span class="p">;</span><span class="w"> </span><span class="n">Consumes</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="no">DLL</span><span class="w"> </span><span class="n">Name</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">iterate_chars</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">iterate_chars</span>:
 </span></span><span class="line"><span class="cl">     <span class="nc">add</span><span class="w"> </span><span class="n">rcx</span><span class="p">,</span><span class="w"> </span><span class="mh">0xfffffffffffffffe</span><span class="w">         </span><span class="p">;</span><span class="w"> </span><span class="n">Subtract</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">DllName</span><span class="w"> </span><span class="n">Length</span><span class="w"> </span><span class="n">i</span><span class="p">.</span><span class="n">e</span><span class="p">.</span><span class="w"> </span><span class="p">(</span><span class="mh">0xffffffffffffffff</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mh">0xfffffffffffffffe</span><span class="o">+</span><span class="mh">0x1</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="n">cmp</span><span class="w"> </span><span class="n">rcx</span><span class="p">,</span><span class="w"> </span><span class="mh">0x00</span><span class="w">                       </span><span class="p">;</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="n">je</span><span class="w"> </span><span class="n">next_iteration</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">     </span><span class="n">jmp</span><span class="w"> </span><span class="n">iterate_chars</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">next_iteration</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">next_iteration</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">sub</span><span class="w"> </span><span class="n">rax</span><span class="p">,</span><span class="w"> </span><span class="mh">0x58</span><span class="w">                        </span><span class="p">;</span><span class="w"> </span><span class="no">_LDR_DATA_TABLE_ENTRY</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">add</span><span class="w"> </span><span class="n">rax</span><span class="p">,</span><span class="w"> </span><span class="mh">0x10</span><span class="w">                        </span><span class="p">;</span><span class="w"> </span><span class="no">_LDR_DATA_TABLE_ENTRY</span><span class="p">.</span><span class="n">InMemoryOrderLinks</span><span class="w"> </span><span class="p">(</span><span class="no">_LIST_ENTRY</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mov</span><span class="w"> </span><span class="n">rax</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">rax</span><span class="w"> </span><span class="p">]</span><span class="w">                      </span><span class="p">;</span><span class="w"> </span><span class="no">_LIST_ENTRY</span><span class="p">.</span><span class="n">Flink</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sub</span><span class="w"> </span><span class="n">rax</span><span class="p">,</span><span class="w"> </span><span class="mh">0x10</span><span class="w">   
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">jmp</span><span class="w"> </span><span class="n">find_names</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">load_address</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">load_address</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">mov</span><span class="w"> </span><span class="n">rax</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">rsp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x08</span><span class="p">]</span><span class="w">                </span><span class="p">;</span><span class="w"> </span><span class="no">_LDR_DATA_TABLE_ENTRY</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mov</span><span class="w"> </span><span class="n">rdx</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">rax</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x30</span><span class="p">]</span><span class="w">                </span><span class="p">;</span><span class="w">  </span><span class="n">DllBase</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">jmp</span><span class="w"> </span><span class="n">parse_pe</span><span class="w">        
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">parse_pe</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">parse_pe</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">mov</span><span class="w">  </span><span class="n">ebx</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">rdx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x3c</span><span class="p">]</span><span class="w">               </span><span class="p">;</span><span class="w"> </span><span class="n">Offset</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="no">PE</span><span class="w"> </span><span class="n">Header</span><span class="p">,</span><span class="w"> </span><span class="n">rdx</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="n">DllBase</span><span class="w">     </span><span class="p">(</span><span class="mh">0x100</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">add</span><span class="w">  </span><span class="n">rdx</span><span class="p">,</span><span class="w"> </span><span class="n">rbx</span><span class="w">                        </span><span class="p">;</span><span class="w"> </span><span class="no">_IMAGE_NT_HEADERS64</span><span class="w">           
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mov</span><span class="w">  </span><span class="n">edi</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">rdx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x18</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x70</span><span class="p">]</span><span class="w">        </span><span class="p">;</span><span class="w"> </span><span class="no">_IMAGE_DATA_DIRECTORY</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">VirtualAddress</span><span class="w"> </span><span class="p">(</span><span class="mh">0xa3f90</span><span class="p">)</span><span class="w">
@@ -141,7 +212,7 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sub</span><span class="w">  </span><span class="n">rdx</span><span class="p">,</span><span class="w"> </span><span class="n">rdi</span><span class="w">                        </span><span class="p">;</span><span class="w"> </span><span class="n">Back</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="no">MZ</span><span class="w"> </span><span class="p">(</span><span class="n">DllBase</span><span class="p">)</span><span class="w">                    </span><span class="p">(</span><span class="mh">0x7ff84d590000</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mov</span><span class="w">  </span><span class="n">ebx</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">rdx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rsi</span><span class="p">]</span><span class="w">                </span><span class="p">;</span><span class="w">  </span><span class="n">DllBase</span><span class="w">  </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">AddressofNames</span><span class="p">)</span><span class="w">            </span><span class="p">(</span><span class="mh">0x0a81a5</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">add</span><span class="w">  </span><span class="n">rbx</span><span class="p">,</span><span class="w"> </span><span class="n">rdx</span><span class="w">                        </span><span class="p">;</span><span class="w"> </span><span class="p">(</span><span class="mh">0x00007ff84d6381a5</span><span class="w"> </span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">NTDLL</span><span class="p">.</span><span class="n">RtlAcquireSRWLockExclusive</span><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">exit</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">exit</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">pop</span><span class="w"> </span><span class="n">r8</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mov</span><span class="w"> </span><span class="n">rsp</span><span class="p">,</span><span class="w"> </span><span class="n">rbp</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">pop</span><span class="w"> </span><span class="n">rbp</span><span class="w">
@@ -216,9 +287,9 @@
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">KERNEL32.DLL :  0x660330
 </span></span><span class="line"><span class="cl">GetCurrentProcessId : 0xf1e78f
 </span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-rust" data-lang="rust"><span class="line"><span class="cl"><span class="n">bits</span><span class="w"> </span><span class="mi">64</span><span class="w"> 
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">section</span><span class="w"> </span><span class="p">.</span><span class="n">text</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">section</span><span class="w"> </span><span class="p">.</span><span class="n">text</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">global</span><span class="w"> </span><span class="n">start</span><span class="w"> 
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">start</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">start</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">push</span><span class="w"> </span><span class="n">rbp</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mov</span><span class="w">  </span><span class="n">rbp</span><span class="p">,</span><span class="w"> </span><span class="n">rsp</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sub</span><span class="w">  </span><span class="n">rsp</span><span class="p">,</span><span class="w"> </span><span class="mh">0x1000</span><span class="w">                           </span><span class="p">;</span><span class="w"> </span><span class="mi">4096</span><span class="w"> </span><span class="n">bytes</span><span class="w"> 
@@ -233,11 +304,11 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">add</span><span class="w"> </span><span class="n">rbx</span><span class="p">,</span><span class="w"> </span><span class="mh">0x48</span><span class="w">                              </span><span class="p">;</span><span class="w"> </span><span class="no">_LDR_DATA_TABLE_ENTRY</span><span class="p">.</span><span class="n">BaseDLlName</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">jmp</span><span class="w"> </span><span class="n">find_base_name</span><span class="w">                         
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">init_regs</span>:                                      <span class="p">;</span><span class="w"> </span><span class="n">Resets</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">registers</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="n">init_regs</span>:                                      <span class="p">;</span><span class="w"> </span><span class="n">Resets</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">registers</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">xor</span><span class="w"> </span><span class="n">rax</span><span class="p">,</span><span class="w"> </span><span class="n">rax</span><span class="w">                                
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">xor</span><span class="w"> </span><span class="n">r8</span><span class="p">,</span><span class="w"> </span><span class="n">r8</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ret</span><span class="w"> 
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">calc_hash_core</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">calc_hash_core</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">mov</span><span class="w"> </span><span class="n">dl</span><span class="p">,</span><span class="w"> </span><span class="n">al</span><span class="w">                          
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">shl</span><span class="w"> </span><span class="n">eax</span><span class="p">,</span><span class="w"> </span><span class="mi">13</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">and</span><span class="w"> </span><span class="n">eax</span><span class="p">,</span><span class="w"> </span><span class="mh">0x0fffffff</span><span class="w">                        </span><span class="p">;</span><span class="w"> </span><span class="n">Avoids</span><span class="w"> </span><span class="n">overflows</span><span class="w">
@@ -246,22 +317,22 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">xor</span><span class="w"> </span><span class="n">rax</span><span class="p">,</span><span class="w"> </span><span class="n">rax</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ret</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">find_base_name</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">find_base_name</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">call</span><span class="w"> </span><span class="n">near</span><span class="w"> </span><span class="n">init_regs</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mov</span><span class="w"> </span><span class="n">rsi</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">rbx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x08</span><span class="p">]</span><span class="w">                     </span><span class="p">;</span><span class="w"> </span><span class="no">_LDR_DATA_TABLE_ENTRY</span><span class="p">.</span><span class="n">BaseDLlName</span>-&gt;<span class="nc">_UNICODE_STRING</span><span class="p">.</span><span class="n">Buffer</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">calc_hash</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">calc_hash</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">lodsw</span><span class="w">                                     </span><span class="p">;</span><span class="w"> </span><span class="n">Loads</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">bytes</span><span class="w">       
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">cmp</span><span class="w"> </span><span class="n">ax</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w">                                 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">je</span><span class="w"> </span><span class="n">check_and_continue</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">call</span><span class="w"> </span><span class="n">calc_hash_core</span><span class="w">                       </span><span class="p">;</span><span class="w"> </span><span class="n">Calcuates</span><span class="w"> </span><span class="n">hash</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">jmp</span><span class="w"> </span><span class="n">calc_hash</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">check_and_continue</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">check_and_continue</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">cmp</span><span class="w"> </span><span class="n">r8d</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">rsp</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x08</span><span class="p">]</span><span class="w">                       </span><span class="p">;</span><span class="w"> </span><span class="n">Compare</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">calculated</span><span class="w"> </span><span class="n">hash</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">loaded</span><span class="w"> </span><span class="n">module</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">pushed</span><span class="w"> </span><span class="n">hash</span><span class="w"> </span><span class="n">value</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">je</span><span class="w"> </span><span class="n">load_base_address</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">walk_through</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">walk_through</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">mov</span><span class="w"> </span><span class="n">rax</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">rsp</span><span class="w"> </span><span class="p">]</span><span class="w">                             </span><span class="p">;</span><span class="w"> </span><span class="n">Restores</span><span class="w"> </span><span class="no">_LDR_DATA_TABLE_ENTRY</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x10</span><span class="w"> </span><span class="p">(</span><span class="no">_LDR_DATA_TABLE_ENTRY</span><span class="p">.</span><span class="n">InMemoryOrderLinks</span><span class="w"> </span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sub</span><span class="w"> </span><span class="n">rax</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="n">h</span><span class="w">                                </span><span class="p">;</span><span class="w"> </span><span class="no">_LDR_DATA_TABLE_ENTRY</span><span class="w">                 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mov</span><span class="w"> </span><span class="n">rbx</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">rax</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x10</span><span class="p">]</span><span class="w">                       </span><span class="p">;</span><span class="w"> </span><span class="no">_LDR_DATA_TABLE_ENTRY</span><span class="p">.</span><span class="n">Flink</span><span class="w">           
@@ -271,28 +342,28 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">push</span><span class="w"> </span><span class="n">rbx</span><span class="w">                                    </span><span class="p">;</span><span class="w"> </span><span class="no">_LDR_DATA_TABLE_ENTRY</span><span class="p">.</span><span class="n">BaseDllName</span><span class="w"> </span><span class="p">(</span><span class="mh">0x58</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">jmp</span><span class="w"> </span><span class="n">find_base_name</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">load_base_address</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">load_base_address</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">mov</span><span class="w"> </span><span class="n">rax</span><span class="p">,</span><span class="w"> </span><span class="n">rbx</span><span class="w">                                </span><span class="p">;</span><span class="w"> </span><span class="no">_LDR_DATA_TABLE_ENTRY</span><span class="p">.</span><span class="n">BaseDllName</span><span class="w">  </span><span class="p">(</span><span class="no">_LDR_DATA_TABLE_ENTRY</span><span class="o">+</span><span class="mh">0x58</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">sub</span><span class="w"> </span><span class="n">rax</span><span class="p">,</span><span class="w"> </span><span class="mh">0x28</span><span class="w">                               </span><span class="p">;</span><span class="w"> </span><span class="n">DLLBase</span><span class="w"> </span><span class="p">(</span><span class="n">BaseAddress</span><span class="p">)</span><span class="w">              </span><span class="p">(</span><span class="no">_LDR_DATA_TABLE_ENTRY</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mh">0x30</span><span class="p">)</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mov</span><span class="w"> </span><span class="n">rax</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">rax</span><span class="p">]</span><span class="w">                              </span><span class="p">;</span><span class="w"> </span><span class="n">DLlBase</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">jmp</span><span class="w"> </span><span class="n">pe_parse</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">again_calc_hash_wrapper</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">again_calc_hash_wrapper</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">call</span><span class="w"> </span><span class="n">init_regs</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">jmp</span><span class="w"> </span><span class="n">again_calc_hash</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">again_calc_hash</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">again_calc_hash</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">lodsb</span><span class="w">                                       </span><span class="p">;</span><span class="w"> </span><span class="n">Loads</span><span class="w"> </span><span class="n">single</span><span class="w"> </span><span class="n">byte</span><span class="w">    
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">cmp</span><span class="w"> </span><span class="n">al</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="w">                      
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">je</span><span class="w"> </span><span class="n">func_ends</span><span class="w">                   
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">call</span><span class="w"> </span><span class="n">calc_hash_core</span><span class="w">                         </span><span class="p">;</span><span class="w"> </span><span class="n">Calculates</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">hash</span><span class="w">            
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">jmp</span><span class="w"> </span><span class="n">again_calc_hash</span><span class="w">                         
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">func_ends</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">func_ends</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">mov</span><span class="w"> </span><span class="n">r11d</span><span class="p">,</span><span class="w"> </span><span class="n">r8d</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ret</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">pe_parse</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">pe_parse</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">push</span><span class="w"> </span><span class="n">rax</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mov</span><span class="w"> </span><span class="n">rdi</span><span class="p">,</span><span class="w"> </span><span class="n">rax</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mov</span><span class="w"> </span><span class="n">rdx</span><span class="p">,</span><span class="w"> </span><span class="n">rax</span><span class="w">                            </span><span class="p">;</span><span class="w"> </span><span class="n">DllBase</span><span class="w">
@@ -306,12 +377,12 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">add</span><span class="w"> </span><span class="n">rax</span><span class="p">,</span><span class="w"> </span><span class="n">rdx</span><span class="w">                            
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">jmp</span><span class="w"> </span><span class="n">resolve_functions</span><span class="w">                   
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">restore_address</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">restore_address</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">xor</span><span class="w"> </span><span class="n">rbx</span><span class="p">,</span><span class="w"> </span><span class="n">rbx</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mov</span><span class="w"> </span><span class="n">rdx</span><span class="p">,</span><span class="w"> </span><span class="n">rdi</span><span class="w">                            </span><span class="p">;</span><span class="w"> </span><span class="n">BaseAddress</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">mov</span><span class="w"> </span><span class="n">rax</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">rsp</span><span class="p">]</span><span class="w">                          </span><span class="p">;</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">resolve_functions</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">resolve_functions</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">mov</span><span class="w"> </span><span class="n">ebx</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">rax</span><span class="p">]</span><span class="w">                          </span><span class="p">;</span><span class="w"> </span><span class="no">_IMAGE_EXPORT_DIRECTORY</span><span class="p">.</span><span class="n">AddressOfNames</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">cmp</span><span class="w"> </span><span class="n">ecx</span><span class="p">,</span><span class="w"> </span><span class="mh">0x0</span><span class="w">                            </span><span class="p">;</span><span class="w"> </span><span class="n">End</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">AddressOfNames</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">je</span><span class="w"> </span><span class="n">trap</span><span class="w">    
@@ -326,10 +397,10 @@
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">je</span><span class="w"> </span><span class="n">found_target_fn</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">jmp</span><span class="w"> </span><span class="n">restore_address</span><span class="w">                     
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">trap</span>:   
+</span></span></span><span class="line"><span class="cl"><span class="n">trap</span>:   
 </span></span><span class="line"><span class="cl">    <span class="nc">int</span><span class="w"> </span><span class="mi">3</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">
-</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">found_target_fn</span>:
+</span></span></span><span class="line"><span class="cl"><span class="n">found_target_fn</span>:
 </span></span><span class="line"><span class="cl">    <span class="nc">mov</span><span class="w"> </span><span class="n">rsp</span><span class="p">,</span><span class="w"> </span><span class="n">rbp</span><span class="w"> 
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">pop</span><span class="w"> </span><span class="n">rbp</span><span class="w">
 </span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">ret</span><span class="w">
@@ -348,60 +419,43 @@
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$&gt;&lt;D:<span class="se">\r</span>un.wds
 </span></span></code></pre></div><p><img src="/posts/windows-shellcode2/image.png" alt="alt text"></p>
 <p>:)</p>
-
-    <h4><a href="http://localhost:1313/">Back to Home</a></h4>
+</section></main>
+        <footer id="main-footer"><div class="footer">
+  <a href="#">Scroll to Top</a>
+  <div class="footer-copyright">
+    <div class="dim">© 2026 </div>
+    <div>Made with ❤️ and powered by <a href="https://github.com/math-queiroz/rusty-typewriter" target="_blank">Rusty Typewriter</a> theme for <a href="https://gohugo.io/" target="_blank">Hugo</a></div>
+  </div>
 </div>
-
-
-        </div><footer class="container">
-    <hr class="soften">
-    <p>
-&copy; 
-
-    
-
-<span id="thisyear">2026</span>
-
-
-</p>
-    <p class="text-center">
-        
-        
-        
-        
-        
-    </p>
 </footer>
-
-</body><link rel="stylesheet" href="/css/bootstrap.css">
-<link rel="stylesheet" href="/css/bootstrap-responsive.css">
-<link rel="stylesheet" href="/css/style.css">
-
-<script src="/js/jquery.js"></script>
-<script src="/js/bootstrap-386.js"></script>
-<script src="/js/bootstrap-transition.js"></script>
-<script src="/js/bootstrap-alert.js"></script>
-<script src="/js/bootstrap-modal.js"></script>
-<script src="/js/bootstrap-dropdown.js"></script>
-<script src="/js/bootstrap-scrollspy.js"></script>
-<script src="/js/bootstrap-tab.js"></script>
-<script src="/js/bootstrap-tooltip.js"></script>
-<script src="/js/bootstrap-popover.js"></script>
-<script src="/js/bootstrap-button.js"></script>
-<script src="/js/bootstrap-collapse.js"></script>
-<script src="/js/bootstrap-carousel.js"></script>
-<script src="/js/bootstrap-typeahead.js"></script>
-<script src="/js/bootstrap-affix.js"></script>
-<script>
-    _386 = { 
-        fastLoad: null ,
-        onePass: null , 
-        speedFactor: 10 
-    };
-
-    
-    function ThisYear() {
-        document.getElementById('thisyear').innerHTML = new Date().getFullYear();
-    };
-</script>
+      </div><a id="aside-toggle-button" href="#">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor">
+<path d="M169.4 297.4C156.9 309.9 156.9 330.2 169.4 342.7L361.4 534.7C373.9 547.2 394.2 547.2 406.7 534.7C419.2 522.2 419.2 501.9 406.7 489.4L237.3 320L406.6 150.6C419.1 138.1 419.1 117.8 406.6 105.3C394.1 92.8 373.8 92.8 361.3 105.3L169.3 297.3z"/>
+</svg>
+</a>
+  <aside id="side-pane" class="side-sticky">
+<div class="side-details">
+    <span>1625 words</span>
+    <span>13 - 16 minutes read</span></div><h3>Table Of Contents</h3><nav id="TableOfContents">
+  <ul>
+    <li><a href="#prerequisites">Prerequisites</a></li>
+    <li><a href="#parsing-executable-with-assembly">Parsing Executable with Assembly</a>
+      <ul>
+        <li><a href="#plan">Plan</a></li>
+        <li><a href="#implementation-assembly-code">Implementation (Assembly Code)</a></li>
+        <li><a href="#explanation-of-each-label">Explanation of Each Label</a></li>
+      </ul>
+    </li>
+    <li><a href="#resolving-api">Resolving API</a>
+      <ul>
+        <li><a href="#techniques">Techniques</a></li>
+      </ul>
+    </li>
+    <li><a href="#api-hashing">API Hashing</a></li>
+  </ul>
+</nav><h3>Attachments</h3>
+    <ul><li><a href="http://localhost:1313/posts/windows-shellcode2/image-1.png">image-1.png</a></li><li><a href="http://localhost:1313/posts/windows-shellcode2/image-3.png">image-3.png</a></li><li><a href="http://localhost:1313/posts/windows-shellcode2/image-4.png">image-4.png</a></li><li><a href="http://localhost:1313/posts/windows-shellcode2/image.png">image.png</a></li><li><a href="">Windows Shellcode2</a></li></ul><h3>Related</h3>
+    <ul><li><a href="/posts/windows-shellcode/">Windows Shellcode Development &amp; Debugging with WinDbg: A Hands-On Guide (Part 1)</a></li><li><a href="/posts/pe-parse-windbg2/">PE Parsing: A Step-by-Step Guide with WinDbg - Part 2</a></li><li><a href="/posts/pe-parse-windbg/">PE Parsing: A Step-by-Step Guide with WinDbg - Part 1</a></li></ul></aside></div>
+  </div>
+</body>
 </html>

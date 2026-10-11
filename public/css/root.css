@@ -1,0 +1,41 @@
+/* variables in root element */
+
+:root {
+
+  --font-family-main: "Bricolage Grotesque", sans-serif;
+  --font-weight-main: 500;
+  --font-family-content: "Bricolage Grotesque", serif;
+  --font-weight-content: 500;
+  --font-family-summary: "Bricolage Grotesque", serif;
+  --font-weight-summary: 500;
+
+  --dim-color: #88888844;
+  --hover-dim-color: #fff;
+
+  --quote-text-color: #888;
+  --code-background-color: #333030;
+  --code-text-color: #f0efea;
+}
+
+:root[color-scheme^='light'] {
+  --body-text-color: #222;
+  --body-background-color: #f0efea;
+
+  --primary-color: #cd5c5c;
+  --selection-color: #dda19b;
+
+  --dim-opacity: 65%;
+}
+
+:root[color-scheme^='dark'] {
+  --color-scheme: dark; /* fixes scrollbar color on google chrome */
+
+  --body-text-color: #f0efea;
+  --body-background-color: #222;
+
+  --primary-color: #cd5c5c;
+  --selection-color: #7d4141;
+
+  --dim-opacity: 50%;
+}
+

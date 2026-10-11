@@ -1,96 +1,108 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>shark-asmx</title>
-    <link>http://localhost:1313/</link>
-    <description>Recent content on shark-asmx</description>
-    <generator>Hugo</generator>
-    <language>en</language>
-    <lastBuildDate>Tue, 25 Aug 2026 06:34:30 +0530</lastBuildDate>
-    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Windows Scheduled Job</title>
-      <link>http://localhost:1313/posts/windows-scheduled-job/windows-scheduled-job/</link>
-      <pubDate>Tue, 25 Aug 2026 06:34:30 +0530</pubDate>
-      <guid>http://localhost:1313/posts/windows-scheduled-job/windows-scheduled-job/</guid>
-      <description>&lt;h2 id=&#34;windows-scheduled-job&#34;&gt;Windows Scheduled Job&lt;/h2&gt;&#xA;&lt;p&gt;We mostly see Windows Scheduled Tasks creation, and usually deal with tasks associated with the Task Scheduler service. It utilizes RPC Interface (i.e., &lt;code&gt;ITaskSchedulerService&lt;/code&gt;) to create, run, and modify them.&lt;/p&gt;&#xA;&lt;p&gt;However, there is a special part of scheduled tasks that acts like a proxy (using this term for convenience).&lt;/p&gt;&#xA;&lt;p&gt;In short, ScheduledJob is used to manage scheduled jobs in Windows PowerShell, while PSScheduledJob is the module that provides this functionality.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Prefetch Files</title>
-      <link>http://localhost:1313/posts/prefetch/prefetch/</link>
-      <pubDate>Thu, 12 Jun 2025 09:54:09 +0530</pubDate>
-      <guid>http://localhost:1313/posts/prefetch/prefetch/</guid>
-      <description>&lt;h1 id=&#34;prefetch-files&#34;&gt;Prefetch Files&lt;/h1&gt;&#xA;&lt;p&gt;Prefetch files are created by Windows to speed up the loading process by caching the neccessary data. When we fire up a process, it will cache the details like files accessed and stores it in small file i.e. prefetch files under &lt;code&gt;Prefetch&lt;/code&gt; subfolder in &lt;code&gt;Windows&lt;/code&gt;. When the application is opened for the next time, it will load the files accessed. Windows Prefetch files are located in &lt;code&gt;C:\Windows\Prefetch\*.pf&lt;/code&gt;. From forensic perspective, it provides various valuable information like&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Windows Bigpools</title>
-      <link>http://localhost:1313/posts/windows-bigpools/windows-bigpools/</link>
-      <pubDate>Fri, 30 May 2025 08:02:59 +0530</pubDate>
-      <guid>http://localhost:1313/posts/windows-bigpools/windows-bigpools/</guid>
-      <description>&lt;p&gt;PoolTag is a 4 bytes value (unsigned int value) present in the header (i.e. &lt;code&gt;POOL_HEADER&lt;/code&gt;) .Microsoft creates pool tag mostly for debugging purposes. So, whenever Kernel creates any object in pool memory, it creates a &lt;code&gt;POOL_HEADER&lt;/code&gt; which contains a &lt;code&gt;PoolTag&lt;/code&gt; field which contains information regarding what kind of object is being created.&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;0: kd&amp;gt; dt nt!_POOL_HEADER &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x000 PreviousSize     : Pos 0, &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; Bits&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x000 PoolIndex        : Pos 8, &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; Bits&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x002 BlockSize        : Pos 0, &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; Bits&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x002 PoolType         : Pos 8, &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; Bits&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x000 Ulong1           : Uint4B&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x004 PoolTag          : Uint4B&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x008 ProcessBilled    : Ptr64 _EPROCESS&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x008 AllocatorBackTraceIndex : Uint2B&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x00a PoolTagHash      : Uint2B&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Let&amp;rsquo;s look at one of the running process, how it actually looks like&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Windows Objects: Structure, Headers, and Internal Mechanics</title>
-      <link>http://localhost:1313/posts/windows-objects/</link>
-      <pubDate>Wed, 12 Mar 2025 08:23:06 +0530</pubDate>
-      <guid>http://localhost:1313/posts/windows-objects/</guid>
-      <description>A deep dive into Windows objects, focusing on their structure, headers, and relationships. This blog covers key components like _OBJECT_HEADER, OBJECT_TYPE, and ObTypeIndexTable, providing insights into how Windows organizes and references objects.</description>
-    </item>
-    <item>
-      <title>Application Crash Dump Analysis</title>
-      <link>http://localhost:1313/posts/application-crash-dump/</link>
-      <pubDate>Fri, 07 Feb 2025 07:38:39 +0530</pubDate>
-      <guid>http://localhost:1313/posts/application-crash-dump/</guid>
-      <description>This post explores application dumps, a crucial tool for debugging and analyzing software errors, offering insights into memory analysis and troubleshooting techniques</description>
-    </item>
-    <item>
-      <title>Kernel Memory Dump Analysis : Introduction</title>
-      <link>http://localhost:1313/posts/dumpanalysis/</link>
-      <pubDate>Thu, 30 Jan 2025 18:28:18 +0530</pubDate>
-      <guid>http://localhost:1313/posts/dumpanalysis/</guid>
-      <description>An introduction to analyzing kernel memory dumps using WinDbg.</description>
-    </item>
-    <item>
-      <title>Windows Shellcode Development &amp; Debugging with WinDbg: A Hands-On Guide (Part 2)</title>
-      <link>http://localhost:1313/posts/windows-shellcode2/</link>
-      <pubDate>Tue, 21 Jan 2025 07:05:40 +0530</pubDate>
-      <guid>http://localhost:1313/posts/windows-shellcode2/</guid>
-      <description>A comprehensive guide to understanding and creating Windows shellcode from scratch for exploit development. This article includes practical insights into using WinDbg for effective debugging and analysis.</description>
-    </item>
-    <item>
-      <title>Windows Shellcode Development &amp; Debugging with WinDbg: A Hands-On Guide (Part 1)</title>
-      <link>http://localhost:1313/posts/windows-shellcode/</link>
-      <pubDate>Sun, 12 Jan 2025 16:22:44 +0530</pubDate>
-      <guid>http://localhost:1313/posts/windows-shellcode/</guid>
-      <description>A comprehensive guide to understanding and creating Windows shellcode from scratch for exploit development. This article includes practical insights into using WinDbg for effective debugging and analysis.</description>
-    </item>
-    <item>
-      <title>PE Parsing: A Step-by-Step Guide with WinDbg - Part 2</title>
-      <link>http://localhost:1313/posts/pe-parse-windbg2/</link>
-      <pubDate>Sun, 12 Jan 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/pe-parse-windbg2/</guid>
-      <description>Hands on parsing PE files with WinDbg and explore their structures for debugging and reverse engineering.</description>
-    </item>
-    <item>
-      <title>PE Parsing: A Step-by-Step Guide with WinDbg - Part 1</title>
-      <link>http://localhost:1313/posts/pe-parse-windbg/</link>
-      <pubDate>Sat, 11 Jan 2025 17:00:50 +0530</pubDate>
-      <guid>http://localhost:1313/posts/pe-parse-windbg/</guid>
-      <description>Hands on parsing PE files with WinDbg and explore their structures for debugging and reverse engineering.</description>
-    </item>
-    <item>
-      <title>ReAL-File-System-bi0sCTF2024</title>
-      <link>http://localhost:1313/posts/resilient-file-system/</link>
-      <pubDate>Fri, 08 Mar 2024 07:51:58 +0000</pubDate>
-      <guid>http://localhost:1313/posts/resilient-file-system/</guid>
-      <description>&lt;p&gt;Full detailed writeup for ReAL-File-System which is centered around ReFS Log Analysis.&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;tl;dr&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Disk Forensics&lt;/li&gt;&#xA;&lt;li&gt;Resilient File System&lt;/li&gt;&#xA;&lt;li&gt;Log Analysis&lt;/li&gt;&#xA;&lt;/ul&gt;</description>
-    </item>
-    <item>
-      <title>Network-KeyLogger</title>
-      <link>http://localhost:1313/posts/keyboard-pcap/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/keyboard-pcap/</guid>
-      <description>how to decode the keystrokes from the pcap</description>
-    </item>
-  </channel>
+	<channel>
+		<title>shark-asmx</title>
+		<link>http://localhost:1313/</link>
+		<description>Recent content on shark-asmx</description>
+		<generator>Hugo</generator>
+		<language>en</language>
+		
+		
+		
+		
+			<lastBuildDate>Tue, 25 Aug 2026 06:34:30 +0530</lastBuildDate>
+		
+			<atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+			<item>
+				<title>Windows Scheduled Job</title>
+				<link>http://localhost:1313/posts/windows-scheduled-job/windows-scheduled-job/</link>
+				<pubDate>Tue, 25 Aug 2026 06:34:30 +0530</pubDate>
+				<guid>http://localhost:1313/posts/windows-scheduled-job/windows-scheduled-job/</guid>
+				<description>&lt;h2 id=&#34;windows-scheduled-job&#34;&gt;Windows Scheduled Job&lt;/h2&gt;&#xA;&lt;p&gt;We mostly see Windows Scheduled Tasks creation, and usually deal with tasks associated with the Task Scheduler service. It utilizes RPC Interface (i.e., &lt;code&gt;ITaskSchedulerService&lt;/code&gt;) to create, run, and modify them.&lt;/p&gt;&#xA;&lt;p&gt;However, there is a special part of scheduled tasks that acts like a proxy (using this term for convenience).&lt;/p&gt;&#xA;&lt;p&gt;In short, ScheduledJob is used to manage scheduled jobs in Windows PowerShell, while PSScheduledJob is the module that provides this functionality.&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>Prefetch Files</title>
+				<link>http://localhost:1313/posts/prefetch/prefetch/</link>
+				<pubDate>Thu, 12 Jun 2025 09:54:09 +0530</pubDate>
+				<guid>http://localhost:1313/posts/prefetch/prefetch/</guid>
+				<description>&lt;h1 id=&#34;prefetch-files&#34;&gt;Prefetch Files&lt;/h1&gt;&#xA;&lt;p&gt;Prefetch files are created by Windows to speed up the loading process by caching the neccessary data. When we fire up a process, it will cache the details like files accessed and stores it in small file i.e. prefetch files under &lt;code&gt;Prefetch&lt;/code&gt; subfolder in &lt;code&gt;Windows&lt;/code&gt;. When the application is opened for the next time, it will load the files accessed. Windows Prefetch files are located in &lt;code&gt;C:\Windows\Prefetch\*.pf&lt;/code&gt;. From forensic perspective, it provides various valuable information like&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>Windows Bigpools</title>
+				<link>http://localhost:1313/posts/windows-bigpools/windows-bigpools/</link>
+				<pubDate>Fri, 30 May 2025 08:02:59 +0530</pubDate>
+				<guid>http://localhost:1313/posts/windows-bigpools/windows-bigpools/</guid>
+				<description>&lt;p&gt;PoolTag is a 4 bytes value (unsigned int value) present in the header (i.e. &lt;code&gt;POOL_HEADER&lt;/code&gt;) .Microsoft creates pool tag mostly for debugging purposes. So, whenever Kernel creates any object in pool memory, it creates a &lt;code&gt;POOL_HEADER&lt;/code&gt; which contains a &lt;code&gt;PoolTag&lt;/code&gt; field which contains information regarding what kind of object is being created.&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;0: kd&amp;gt; dt nt!_POOL_HEADER &#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x000 PreviousSize     : Pos 0, &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; Bits&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x000 PoolIndex        : Pos 8, &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; Bits&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x002 BlockSize        : Pos 0, &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; Bits&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x002 PoolType         : Pos 8, &lt;span class=&#34;m&#34;&gt;8&lt;/span&gt; Bits&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x000 Ulong1           : Uint4B&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x004 PoolTag          : Uint4B&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x008 ProcessBilled    : Ptr64 _EPROCESS&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x008 AllocatorBackTraceIndex : Uint2B&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;   +0x00a PoolTagHash      : Uint2B&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Let&amp;rsquo;s look at one of the running process, how it actually looks like&lt;/p&gt;</description>
+			</item>
+			<item>
+				<title>Search</title>
+				<link>http://localhost:1313/search/</link>
+				<pubDate>Mon, 24 Mar 2025 23:00:00 -0300</pubDate>
+				<guid>http://localhost:1313/search/</guid>
+				<description>&lt;h1 id=&#34;search&#34;&gt;Search&lt;/h1&gt;&#xA;&lt;p&gt;Here you can search for indexable pages, like posts and alike. There&amp;rsquo;s also support for URL param &amp;ldquo;q&amp;rdquo; which then auto searches upon page load event.&lt;/p&gt;&#xA;&lt;p class=&#34;hidden&#34;&gt;It&amp;#39;s necessary to enable Javascript&lt;/p&gt;&#xA;&lt;p class=&#34;search-loading hidden&#34;&gt;Loading...&lt;/p&gt;&#xA;&#xA;&lt;form id=&#34;search-form&#34; class=&#34;search-form&#34; action=&#34;#&#34; method=&#34;post&#34; accept-charset=&#34;UTF-8&#34; role=&#34;search&#34;&gt;&#xA;  &lt;div class=&#34;search-bar&#34;&gt;&#xA;    &lt;label for=&#34;query&#34; class=&#34;hidden&#34;&gt;&lt;/label&gt;&#xA;    &lt;input id=&#34;query&#34; class=&#34;search-text&#34; type=&#34;text&#34; placeholder=&#34;Search...&#34;/&gt;&#xA;  &lt;/div&gt;&#xA;&lt;/form&gt;&#xA;&#xA;&lt;div class=&#34;search-results&#34;&gt;&lt;/div&gt;&#xA;&#xA;&lt;template&gt;&#xA;  &lt;article class=&#34;search-result list-view&#34;&gt;&#xA;    &lt;header&gt;&#xA;      &lt;h2 class=&#34;title&#34;&gt;&lt;a href=&#34;#&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&#xA;      &lt;div class=&#34;submitted&#34;&gt;&#xA;        &lt;time class=&#34;created-date&#34;&gt;&lt;/time&gt;&#xA;      &lt;/div&gt;&#xA;    &lt;/header&gt;&#xA;    &lt;p class=&#34;content&#34;&gt;&lt;/p&gt;&#xA;  &lt;/article&gt;&#xA;&lt;/template&gt;</description>
+			</item>
+			<item>
+				<title>Windows Objects: Structure, Headers, and Internal Mechanics</title>
+				<link>http://localhost:1313/posts/windows-objects/</link>
+				<pubDate>Wed, 12 Mar 2025 08:23:06 +0530</pubDate>
+				<guid>http://localhost:1313/posts/windows-objects/</guid>
+				<description>A deep dive into Windows objects, focusing on their structure, headers, and relationships. This blog covers key components like _OBJECT_HEADER, OBJECT_TYPE, and ObTypeIndexTable, providing insights into how Windows organizes and references objects.</description>
+			</item>
+			<item>
+				<title>Application Crash Dump Analysis</title>
+				<link>http://localhost:1313/posts/application-crash-dump/</link>
+				<pubDate>Fri, 07 Feb 2025 07:38:39 +0530</pubDate>
+				<guid>http://localhost:1313/posts/application-crash-dump/</guid>
+				<description>This post explores application dumps, a crucial tool for debugging and analyzing software errors, offering insights into memory analysis and troubleshooting techniques</description>
+			</item>
+			<item>
+				<title>Kernel Memory Dump Analysis : Introduction</title>
+				<link>http://localhost:1313/posts/dumpanalysis/</link>
+				<pubDate>Thu, 30 Jan 2025 18:28:18 +0530</pubDate>
+				<guid>http://localhost:1313/posts/dumpanalysis/</guid>
+				<description>An introduction to analyzing kernel memory dumps using WinDbg.</description>
+			</item>
+			<item>
+				<title>Windows Shellcode Development &amp; Debugging with WinDbg: A Hands-On Guide (Part 2)</title>
+				<link>http://localhost:1313/posts/windows-shellcode2/</link>
+				<pubDate>Tue, 21 Jan 2025 07:05:40 +0530</pubDate>
+				<guid>http://localhost:1313/posts/windows-shellcode2/</guid>
+				<description>A comprehensive guide to understanding and creating Windows shellcode from scratch for exploit development. This article includes practical insights into using WinDbg for effective debugging and analysis.</description>
+			</item>
+			<item>
+				<title>Windows Shellcode Development &amp; Debugging with WinDbg: A Hands-On Guide (Part 1)</title>
+				<link>http://localhost:1313/posts/windows-shellcode/</link>
+				<pubDate>Sun, 12 Jan 2025 16:22:44 +0530</pubDate>
+				<guid>http://localhost:1313/posts/windows-shellcode/</guid>
+				<description>A comprehensive guide to understanding and creating Windows shellcode from scratch for exploit development. This article includes practical insights into using WinDbg for effective debugging and analysis.</description>
+			</item>
+			<item>
+				<title>PE Parsing: A Step-by-Step Guide with WinDbg - Part 2</title>
+				<link>http://localhost:1313/posts/pe-parse-windbg2/</link>
+				<pubDate>Sun, 12 Jan 2025 00:00:00 +0000</pubDate>
+				<guid>http://localhost:1313/posts/pe-parse-windbg2/</guid>
+				<description>Hands on parsing PE files with WinDbg and explore their structures for debugging and reverse engineering.</description>
+			</item>
+			<item>
+				<title>PE Parsing: A Step-by-Step Guide with WinDbg - Part 1</title>
+				<link>http://localhost:1313/posts/pe-parse-windbg/</link>
+				<pubDate>Sat, 11 Jan 2025 17:00:50 +0530</pubDate>
+				<guid>http://localhost:1313/posts/pe-parse-windbg/</guid>
+				<description>Hands on parsing PE files with WinDbg and explore their structures for debugging and reverse engineering.</description>
+			</item>
+			<item>
+				<title>ReAL-File-System-bi0sCTF2024</title>
+				<link>http://localhost:1313/posts/resilient-file-system/</link>
+				<pubDate>Fri, 08 Mar 2024 07:51:58 +0000</pubDate>
+				<guid>http://localhost:1313/posts/resilient-file-system/</guid>
+				<description>&lt;p&gt;Full detailed writeup for ReAL-File-System which is centered around ReFS Log Analysis.&lt;/p&gt;&#xA;&lt;p&gt;&lt;strong&gt;tl;dr&lt;/strong&gt;&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;Disk Forensics&lt;/li&gt;&#xA;&lt;li&gt;Resilient File System&lt;/li&gt;&#xA;&lt;li&gt;Log Analysis&lt;/li&gt;&#xA;&lt;/ul&gt;</description>
+			</item>
+			<item>
+				<title>Network-KeyLogger</title>
+				<link>http://localhost:1313/posts/keyboard-pcap/</link>
+				<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+				<guid>http://localhost:1313/posts/keyboard-pcap/</guid>
+				<description>how to decode the keystrokes from the pcap</description>
+			</item>
+	</channel>
 </rss>
