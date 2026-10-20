@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
-		<title>BigPool on shark-asmx</title>
+		<title>BigPool on ptrshark</title>
 		<link>http://localhost:1313/tags/bigpool/</link>
-		<description>Recent content in BigPool on shark-asmx</description>
+		<description>Recent content in BigPool on ptrshark</description>
 		<generator>Hugo</generator>
 		<language>en</language>
 		

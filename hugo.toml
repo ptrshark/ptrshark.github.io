@@ -1,5 +1,5 @@
-baseURL = "https://shark-asmx.github.io/"
-title = "shark-asmx"
+baseURL = "https://ptrshark.github.io/"
+title = "ptrshark"
 theme = "rusty-typewriter"
 
 # Global Configuration
@@ -31,9 +31,9 @@ series = "series"
 env = "production"
 mainpagetitle = "hex codes"
 mainpagesubtitle = "shark blog"
-copyrightname = "shark-asmx"
+copyrightname = "ptrshark"
 loadspeedfactor = 10.0
-description = "shark-asmx's blog"
+description = "ptrshark's blog"
 defaultTheme = "auto"
 theme = "dark"
 palette = "rusty-typewriter"
@@ -58,7 +58,7 @@ contentTypeName = "posts"
 # Profile / Home Mode Configuration
 [params.profileMode]
 enabled = true
-title = "shark-asmx"
+title = "ptrshark"
 imageUrl = "https://avatars.githubusercontent.com/u/89577007"
 imageTitle = "Profile image"
 imageWidth = 130
@@ -70,7 +70,7 @@ name = "Blog"
 url = "posts"
 
 [params.homeInfoParams]
-Title = "Hii, I'm shark!!. I go with prefix shark"
+Title = "Hii, I'm ptrshark"
 Content = [
   "i'm curious about everything and can read pretty much anything. doesn’t mean my brain actually processes any of it, though"
 ]
@@ -78,12 +78,12 @@ Content = [
 [[params.socialIcons]]
 name = "Github"
 title = "Join me on Github"
-url = "https://github.com/shark-asmx"
+url = "https://github.com/ptrshark"
 
 [[params.socialIcons]]
 name = "X"
 title = "Join me on Twitter"
-url = "https://twitter.com/shark-asmx"
+url = "https://twitter.com/ptrshark"
 
 [[params.socialIcons]]
 name = "linkedin"

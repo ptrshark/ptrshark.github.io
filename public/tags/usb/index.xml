@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
-		<title>USB on shark-asmx</title>
+		<title>USB on ptrshark</title>
 		<link>http://localhost:1313/tags/usb/</link>
-		<description>Recent content in USB on shark-asmx</description>
+		<description>Recent content in USB on ptrshark</description>
 		<generator>Hugo</generator>
 		<language>en</language>
 		
