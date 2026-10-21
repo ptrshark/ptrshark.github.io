@@ -6,7 +6,7 @@ summary = 'Hands on parsing PE files with WinDbg and explore their structures fo
 draft = false
 +++
 
-#### PE Import Directory Parsing 
+#### PE Import Directory Parsing
 
 ```bash
 0: kd> !process 0 0 msedge.exe
@@ -26,7 +26,7 @@ Loading User Symbols
 0: kd> lm v m HTTP
 Browse full module list
 start             end                 module name
-fffff800`15e50000 fffff800`15fd8000   HTTP       (no symbols)           
+fffff800`15e50000 fffff800`15fd8000   HTTP       (no symbols)
     Loaded symbol image file: HTTP.sys
     Mapped memory image file: c:\programdata\dbg\sym\HTTP.sys\43E8008A188000\HTTP.sys
     Image path: \SystemRoot\system32\drivers\HTTP.sys
@@ -37,7 +37,7 @@ fffff800`15e50000 fffff800`15fd8000   HTTP       (no symbols)
     CheckSum:         00188BE7
     ImageSize:        00188000
     Translations:     0000.04b0 0000.04e4 0409.04b0 0409.04e4
-    Information from resource tables: 
+    Information from resource tables:
 ```
 
 ImageName : HTTP.sys
@@ -57,7 +57,7 @@ fffff800`15e50010  b8 00 00 00 00 00 00 00-40 00 00 00 00 00 00 00  ........@...
 fffff800`15e50020  00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  ................
 fffff800`15e50030  00 00 00 00 00 00 00 00-00 00 00 00 d8 00 00 00  ................
 
-0: kd> dt combase!_IMAGE_DOS_HEADER  fffff800`15e50000 
+0: kd> dt combase!_IMAGE_DOS_HEADER  fffff800`15e50000
    +0x000 e_magic          : 0x5a4d
    +0x002 e_cblp           : 0x90
    +0x004 e_cp             : 3
@@ -87,7 +87,7 @@ Evaluate expression: 216 = 00000000`000000d8
 ```bash
 fffff807`2a4a0040  0e 1f ba 0e 00 b4 09 cd-21 b8 01 4c cd 21 54 68  ........!..L.!Th
 fffff807`2a4a0050  69 73 20 70 72 6f 67 72-61 6d 20 63 61 6e 6e 6f  is program canno
-fffff807`2a4a0060  74 20 62 65 20 72 75 6e-20 69 6e 20 44 4f 53 20  t be run in DOS 
+fffff807`2a4a0060  74 20 62 65 20 72 75 6e-20 69 6e 20 44 4f 53 20  t be run in DOS
 fffff807`2a4a0070  6d 6f 64 65 2e 0d 0d 0a-24 00 00 00 00 00 00 00  mode....$.......
 fffff807`2a4a0080  bd 0a c4 77 f9 6b aa 24-f9 6b aa 24 f9 6b aa 24  ...w.k.$.k.$.k.$
 fffff807`2a4a0090  f9 6b ab 24 53 6a aa 24-ed 00 ab 25 f6 6b aa 24  .k.$Sj.$...%.k.$
@@ -224,7 +224,7 @@ typedef struct _IMAGE_IMPORT_DESCRIPTOR {
 
 ```bash
 0: kd> dt combase!_IMAGE_IMPORT_DESCRIPTOR (fffff800`15e50000 + 0x87d90)
-   +0x000 Characteristics  :  0x880d0  
+   +0x000 Characteristics  :  0x880d0
    +0x000 OriginalFirstThunk : 0x880d0 // Points to Import Name Table
    +0x004 TimeDateStamp    : 0
    +0x008 ForwarderChain   : 0
@@ -275,7 +275,7 @@ fffff800`15ed93ec  "..RtlEnumerateGenericTableAvl"
 0: kd> da (fffff800`15e50000 + 00000000`0008940a)
 fffff800`15ed940a  "..KeQueryHighestNodeNumber"
 
-//Entry 0x02 
+//Entry 0x02
 0: kd> dt combase!_IMAGE_IMPORT_BY_NAME (fffff800`15e50000 + 00000000`00089426)
    +0x000 Hint             : 0x88f
    +0x002 Name             : [1]  "R"
@@ -296,7 +296,7 @@ fffff800`15edb4de  "ExFreeCacheAwareRundownProtectio"
 fffff800`15edb4fe  "n"
 ```
 
-###### FirstThunk Parsing 
+###### FirstThunk Parsing
 
 ```bash
 // ImageBaseAddress + FirstThunk
@@ -389,7 +389,7 @@ fffff800`15ed7398  fffff800`10d31230 nt!RtlIsStateSeparationEnabled
 
 ```
 
-Parsing `HTTP.sys` using [PEInsight](https://github.com/5h4rrk/PEInsight)
+Parsing `HTTP.sys` using [PEInsight](https://github.com/ptrshark/PEInsight)
 
 ```bash
         ntoskrnl.exe
@@ -443,7 +443,7 @@ unsigned int64 0x14
    +0x010 FirstThunk       : 0x87000 // Import Address Table
 ```
 
-##### HAL.dll 
+##### HAL.dll
 
 ```bash
 0: kd> da  (fffff800`15e50000 + 0x8aa62)
@@ -453,8 +453,8 @@ fffff800`15edaa62  "HAL.dll"
 
 ```bash
 0: kd> dqs  (fffff800`15e50000 + 0x87e30)
-fffff800`15ed7e30  00000000`0008aa46 
-fffff800`15ed7e38  00000000`00000000 // Ends Entry for HAL.dll 
+fffff800`15ed7e30  00000000`0008aa46
+fffff800`15ed7e38  00000000`00000000 // Ends Entry for HAL.dll
 fffff800`15ed7e40  00000000`0008b1d6
 fffff800`15ed7e48  00000000`0008b1b2
 
@@ -476,12 +476,12 @@ fffff800`15edaa76  74 42 75 66 66 65 72 00-4c 00 53 73 6c 47 65 74  tBuffer.L.Ss
 0: kd> da  (fffff800`15e50000 + 00000000`0008aa46)
 fffff800`15edaa46  "T"
 
-// NAME 
+// NAME
 0: kd> da  (fffff800`15e50000 + 00000000`0008aa46 + 0x2)
 fffff800`15edaa48  "KeQueryPerformanceCounter"
 
 ```
-###### FirstThunk Parsing 
+###### FirstThunk Parsing
 
 ```bash
 // ImageBaseAddress + FirstThunk
@@ -493,7 +493,7 @@ fffff800`15ed7018  fffff800`12837a20 ndis!NdisGetThreadObjectCompartmentId
 fffff800`15ed7020  00000000`00000000
 ```
 
-Parsing `HTTP.sys` using [PEInsight](https://github.com/5h4rrk/PEInsight)
+Parsing `HTTP.sys` using [PEInsight](https://github.com/ptrshark/PEInsight)
 
 ```bash
        HAL.dll
@@ -590,8 +590,8 @@ fffff800`15ed7078  fffff800`129cc500 NETIO!KfdDerefFilterContext
 .....
 ```
 
-To dump the everything from executable 
+To dump the everything from executable
 
 ```bash
-!dh -a fffff800`15e50000 
+!dh -a fffff800`15e50000
 ```

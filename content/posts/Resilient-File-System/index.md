@@ -1,16 +1,16 @@
 ---
 title: ReAL-File-System-bi0sCTF2024
 date: 2024-03-08 07:51:58
-author: 5h4rrk
-author_url: https://twitter.com/5h4rrk
+author: ptrshark
+author_url: https://twitter.com/ptr_shark
 categories:
   - Forensics
 tags:
   - bi0sCTF2024
   - Resilient File System
   - File System Analysis
-  - Log Analysis 
-  - File System Forensics 
+  - Log Analysis
+  - File System Forensics
   - ReFS
 ---
 
@@ -18,15 +18,15 @@ Full detailed writeup for ReAL-File-System which is centered around ReFS Log Ana
 
 **tl;dr**
 
-+ Disk Forensics 
++ Disk Forensics
 + Resilient File System
-+ Log Analysis 
++ Log Analysis
 
 <!--more-->
 
 **Challenge Points**: 1000
 **No. of solves**: 0
-**Challenge Author**: [5h4rrK](https://twitter.com/5h4rrK)
+**Challenge Author**: [ptrshark](https://twitter.com/ptr_shark)
 
 
 ### Challenge Description
@@ -59,7 +59,7 @@ In a desperate bid to synchronize my PC clock, I unwittingly downloaded an appli
 
 **Recover the files that have been deleted, and provide the md5sum of each recovered file.**
 
-> Format - [ ['file1hash'] , ['file2hash'], ... ]  
+> Format - [ ['file1hash'] , ['file2hash'], ... ]
 
 #### **Question 5**
 
@@ -86,7 +86,7 @@ The most recent version of Active Disk Editor is capable of loading ReFS, so we 
 
 ![AltText](images/image-104.png)
 
-The Volume Boot Record (VBR) serves as a reference to the `Superblock`, a crucial component. The `Superblock` references to child nodes known as `CheckPoint`. 
+The Volume Boot Record (VBR) serves as a reference to the `Superblock`, a crucial component. The `Superblock` references to child nodes known as `CheckPoint`.
 
 ![AltText](images/image-106.png)
 
@@ -175,12 +175,12 @@ Similar calculations and adjustments are necessary for other Superblock and Chec
 
 ![AltText](images/image-101.png)
 
-- LCN1 : `0x1e` 
+- LCN1 : `0x1e`
 - Offset : 0x1e \* 0x1000 = **0x1e000**
 
 ![AltText](images/image-102.png)
 
-- LCN1 : `0x0f7ffd`  
+- LCN1 : `0x0f7ffd`
 
 ![AltText](images/image-103.png)
 
@@ -233,7 +233,7 @@ Now, let's explore the structure of the ReFS LogFile in detail.
 
 #### Explanation
 
-#### Entry Header and Log Record Header 
+#### Entry Header and Log Record Header
 
 ![AltText](images/image-204.png)
 
@@ -256,7 +256,7 @@ Redo Log Header Size : 0x38 bytes
 
 ![AltText](images/image-209.png)
 
-`Tail Offset` : _indicates ending of data offset array_  
+`Tail Offset` : _indicates ending of data offset array_
 
 `Tail Size`: _size of each transaction_
 
@@ -293,7 +293,7 @@ class TransactionContext:
     def parse_transaction(self):
         transaction = []
         tail_offset, tail_size = struct.unpack('<2I', self.buf.read(8))
-        next_rp = self.buf.tell()  
+        next_rp = self.buf.tell()
 
         while (True):
             if next_rp == 0:
@@ -316,7 +316,7 @@ class TransactionContext:
 
 _Source: [ARIN](https://github.com/horensic/ARIN)_
 
-##### Example 3 
+##### Example 3
 
 ![alt text](images/image-9.png)
 
@@ -456,7 +456,7 @@ Alternatively, another method to determine the deletion timestamp is by analyzin
 > **Note : If a directory was renamed, include its original name and creation time.**
 
 > **Fomat : [ ['DirectoryName' , 'CreatedTime'] , .... ]**
-  
+
 
 Dir Creation
 
@@ -597,12 +597,12 @@ In the same manner, examine the log file and we will find the other simple delet
         ['essay.txt','2024-02-18 13:18:22.47','Permanent']
     ]
 ```
-  
+
 
 #### Question-6
 
 6. Restore all encrypted files, decrypt them, and provide the **md5sum** of each decrypted file after removing any extra bytes before computing the hash.
-  
+
 > **Format :[['hash1'], ['hash2'],..]**
 
 ##### An Overview on time_update.exe
@@ -662,7 +662,7 @@ Because it updates the time before encrypting the files, it leaves a trace in th
 
 First Rename : _`15005-39026.pdf -> bf2f63b3`_
 
-Search for the _`bf2f63b3`_. 
+Search for the _`bf2f63b3`_.
 
 ![AltText](images/image-5.png)
 ![AltText](images/image-6.png)
@@ -720,7 +720,7 @@ cat 0cf51fbc_1.tort 0cf51fbc_2.tort > 0cf51fbc.tort
 ```bash
 dd if=ReAL_File_System.001 skip=$(((0x10025000)/64)) count=$(((0x89ce40)/64))  bs=64 of=a917438f.tort
 ```
-Remove the extra bytes from the extracted files present due to the block size used during extraction. 
+Remove the extra bytes from the extracted files present due to the block size used during extraction.
 
 ![AltText](images/image-28.png)
 
@@ -732,7 +732,7 @@ Remove the extra bytes from the extracted files present due to the block size us
 ![AltText](images/image-32.png)
 
 Go to offset `0x108c2000`, `0x10c05000` & read `830 * 0x1000` ,`130 * 0x1000`bytes respectively
- 
+
 ```bash
  dd if=ReAL_File_System.001 skip=$(((0x108c2000)/8192)) count=$(((830 * 0x1000)/8192))  bs=8192 of=7a6c7166_1.tort
  dd if=ReAL_File_System.001 skip=$(((0x10c05000)/4096)) count=$(((130 * 0x1000)/4096))  bs=4096 of=7a6c7166_2.tort
@@ -888,7 +888,7 @@ def check_header(buff, key, ext):
 
     if ext ==  'gif':
         res =dec(encbuff=buff[: len(Extensions.GIF)], key1=key, key2=temp_key2)
-        if res == Extensions.GIF: return True  
+        if res == Extensions.GIF: return True
 
     if ext  == 'zip' or ext == 'docx':
         res =dec(encbuff=buff[: len(Extensions.ZIP)], key1=key, key2=temp_key2)
@@ -985,9 +985,9 @@ if __name__ == "__main__":
 ```
 ![AltText](images/image-37.png)
 
-Let's calculate md5sum of each file 
+Let's calculate md5sum of each file
 
-```bash md5sum * 
+```bash md5sum *
 da8ed3e98eb5a2ba769ea60b48b0f6eb  15005-39026.pdf
 d58621ce6e560ba1c045892aef0b5f8b  binary-01.gif
 683092bd6640e62a3dc49b412da4fe71  Everest Vista.webp
@@ -1030,4 +1030,4 @@ bc9a53c83976e9779bce2d0635f1bbbe  so-cappy.jpg
 
 ---
 
-**Contact**: **Sabhya Raj Mehta(5h4rrK)** | [Twitter](https://twitter.com/5h4rrK) |  [GitHub](https://github.com/5h4rrK) |   [LinkedIn](https://linkedin.com/in/sabhya05) 
+**Contact**: **Sabhya Raj Mehta(ptrshark)** | [Twitter](https://twitter.com/ptr_shark) |  [GitHub](https://github.com/ptrshark) |   [LinkedIn](https://linkedin.com/in/sabhya05)

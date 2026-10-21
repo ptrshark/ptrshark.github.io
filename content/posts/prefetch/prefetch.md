@@ -1,22 +1,22 @@
 +++
 title = "Prefetch Files"
 date = "2025-06-12T09:54:09+05:30"
-author = "5h4rrk"
+author = "ptrshark"
 tags = ["Windows Prefetch", "Windows Forensics", "Digital Forensics", "Prefetch File Analysis", "Prefetch Parser", "Windows Performance"]
 description = "An analysis of Windows Prefetch files, their structure, forensic significance, and decompression process."
 draft=false
 +++
 
-# Prefetch Files 
+# Prefetch Files
 
 Prefetch files are created by Windows to speed up the loading process by caching the neccessary data. When we fire up a process, it will cache the details like files accessed and stores it in small file i.e. prefetch files under `Prefetch` subfolder in `Windows`. When the application is opened for the next time, it will load the files accessed. Windows Prefetch files are located in `C:\Windows\Prefetch\*.pf`. From forensic perspective, it provides various valuable information like
 
-- Executable Name 
+- Executable Name
 - Full Executable Path
 - Execution Count
 - Last Run Time
 - TimeStamp (when executed i.e. Last 8 timestamps)
-- MACB Time 
+- MACB Time
 - Executable Path Hash
 - Volume Information
 - Files accessed
@@ -35,7 +35,7 @@ prefetch_settings = {
 
 - Maximum Number of Prefetch files
     - **WindowsXP-Windows7**: 128 files
-    - **Windows8-Windows11**: 1024 files 
+    - **Windows8-Windows11**: 1024 files
 
 ## Prefetch File Structure
 
@@ -46,7 +46,7 @@ Windows Prefetch files are compressed and stored in `.pf` format. To obtain the 
 - Compressed Header ( 0x4 bytes)
 - Uncompressed Size ( 0x4 bytes)
 - CRC32             ( 0x4 bytes) // Optional
-- Compressed buffer 
+- Compressed buffer
 
 Compressed Header: `0x4D414D04` (`MAM\x04`)
 
@@ -207,8 +207,8 @@ HMODULE hNtdll = GetModuleHandleA("ntdll.dll");
   std::println("Signature {:#x}", prefetch.signature);
   std::println("Decompressed Size {:#x}", prefetch.size);
   std::println("Compressed Size {:#x}", CompressedSize);
-  
-  
+
+
   // Decompressing
   ULONG FinalUncompressedSize = 0x0;
   PVOID workspace = VirtualAlloc(nullptr, CompressBufferWorkSpaceSize, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
@@ -218,7 +218,7 @@ HMODULE hNtdll = GetModuleHandleA("ntdll.dll");
     CleanUp(hNtdll, hFile);
     return GetLastError();
   }
- 
+
   NTSTATUS decompress_flag = RtlDecompressBufferExPtr(
       COMPRESSION_FORMAT_XPRESS_HUFF, prefetch.payloadPtr, prefetch.size, prefetch.compressedPayload,
       CompressedSize, &FinalUncompressedSize,
